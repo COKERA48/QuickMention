@@ -1,4 +1,4 @@
-package com.example.ashley.quickmentiontest;
+package com.testingtestingtesting.ashley.quickmentiontest;
 
 /**
  * Created by Ashley on 11/14/2017.

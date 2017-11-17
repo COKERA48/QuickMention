@@ -1,4 +1,4 @@
-package com.example.ashley.quickmentiontest;
+package com.testingtestingtesting.ashley.quickmentiontest;
 
 import org.junit.Test;
 
