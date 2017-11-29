@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+
     private void registerUser()
     {
         String email = editTextEmail.getText().toString().trim();
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        //Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         if(task.isSuccessful()) {
                             finish();
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         }
                         progressDialog.dismiss();
-//blah
+
                     }
                 });
     }
