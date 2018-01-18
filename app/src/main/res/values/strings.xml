@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">QuickMentionTest</string>
+    <string name="app_name">Quick Mention</string>
     <string name="title_activity_login">LoginActivity</string>
 </resources>

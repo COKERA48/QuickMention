@@ -23,20 +23,20 @@ import static org.junit.Assert.*;
  * is then opened and that the current user is the test user that was just registered.
  * The user is then deleted and signed out.
  */
-public class MainActivityTest {
+public class RegisterActivityTest {
 
-    private MainActivity mActivity;
+    private RegisterActivity rActivity;
 
     private Instrumentation.ActivityMonitor monitor = getInstrumentation().addMonitor(ProfileActivity.class.getName(),null,false);
 
     private FirebaseAuth mAuth;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<RegisterActivity> rActivityTestRule = new ActivityTestRule<>(RegisterActivity.class);
 
     @Before
     public void setUp() throws Exception {
-        mActivity = mActivityTestRule.getActivity();
+        rActivity = rActivityTestRule.getActivity();
         mAuth = FirebaseAuth.getInstance();
     }
 
