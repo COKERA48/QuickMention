@@ -3,7 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "26.0.2"
+    dataBinding.enabled = true
     defaultConfig {
+
         applicationId "com.testingtestingtesting.ashley.quickmentiontest"
         minSdkVersion 15
         targetSdkVersion 25

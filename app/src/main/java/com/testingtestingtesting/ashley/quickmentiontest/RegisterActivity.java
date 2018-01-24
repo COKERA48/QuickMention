@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (mAuth.getCurrentUser() != null){
             //start profile activity here
             finish();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         }
 
         buttonRegister = (Button) findViewById(R.id.buttonRegister);

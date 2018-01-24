@@ -1,6 +1,7 @@
 package com.testingtestingtesting.ashley.quickmentiontest;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button buttonSignOut;
     private Button buttonSave;
     private DatabaseReference databaseReference;
+    private SQLiteDatabase myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseUser user = mAuth.getCurrentUser();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        myDB = new DatabaseHelper(this).getWritableDatabase();
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
         textViewUserEmail.setText("Welcome " + user.getEmail());
