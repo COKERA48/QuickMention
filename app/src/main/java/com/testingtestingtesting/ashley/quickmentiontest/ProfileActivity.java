@@ -40,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
-        textViewUserEmail.setText("Hello " + user.getEmail());
+        textViewUserEmail.setText("Welcome " + user.getEmail());
 
         editTextName = (EditText) findViewById(R.id.editTextName);
 
