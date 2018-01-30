@@ -30,9 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ENDS       DATETIME, " +
                 "REPEATS    INT, " +
                 "USERID     INT FOREIGN KEY)");
-        db.execSQL("CREATE TABLE CATEGORIES (" +
-                "ID     INT PRIMARY KEY AUTOINCREMENT    NOT NULL," +
-                "NAME   TEXT    NOT NULL)");
+
     }
 
     @Override
