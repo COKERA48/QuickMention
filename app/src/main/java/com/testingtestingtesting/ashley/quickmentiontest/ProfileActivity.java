@@ -23,7 +23,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button buttonSignOut;
     private Button buttonSave;
     private DatabaseReference databaseReference;
-    private SQLiteDatabase myDB;
+    private DatabaseHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseUser user = mAuth.getCurrentUser();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        myDB = new DatabaseHelper(this).getWritableDatabase();
+        myDB = new DatabaseHelper(this);
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
         textViewUserEmail.setText("Welcome " + user.getEmail());
@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         if (v == buttonSave){
             saveUserInformation();
+            startActivity(new Intent(this, MainActivity.class));
         }
 
     }

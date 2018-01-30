@@ -34,9 +34,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null){
-            //start profile activity here
+            //start main activity here
             finish();
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
 
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
