@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 
+import java.util.List;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button buttonRegister;
@@ -23,6 +26,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText editTextPassword;
     private TextView textViewSignIn;
     private FirebaseAuth mAuth;
+    private UserDao userDao;
+    private DaoSession daoSession;
 
     private ProgressDialog progressDialog;
 
@@ -49,9 +54,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         progressDialog = new ProgressDialog(this);
 
+        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        userDao = daoSession.getUserDao();
 
-
-
+        List<User> joes = userDao.queryBuilder().list();
+        Log.d("DaoExample", "Users in database, ID: " + joes);
     }
 
 
@@ -59,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void registerUser()
     {
-        String email = editTextEmail.getText().toString().trim();
+        final String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email))
@@ -89,8 +96,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()) {
+                            User user = new User();
+                            user.setEmail(email);
+                            userDao.insert(user);
+                            Log.d("DaoExample", "Inserted new user, ID: " + user.getId());
                             finish();
-                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }else {
                             Toast.makeText(RegisterActivity.this, "Could not register. Please try again.",
                                     Toast.LENGTH_SHORT).show();
@@ -109,6 +120,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (v == buttonRegister)
         {
             registerUser();
+
         }
 
 
