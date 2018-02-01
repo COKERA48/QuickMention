@@ -26,15 +26,18 @@ public class Task {
     //need to add how often it will repeat
     private Long templateId;
 
-    @Generated(hash = 638321980)
+    private Long userId;
+
+    @Generated(hash = 456358077)
     public Task(Long id, String name, Date startDate, Date endDate,
-            Boolean isReoccurring, Long templateId) {
+            Boolean isReoccurring, Long templateId, Long userId) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.isReoccurring = isReoccurring;
         this.templateId = templateId;
+        this.userId = userId;
     }
     @Generated(hash = 733837707)
     public Task() {
@@ -74,5 +77,11 @@ public class Task {
     }
     public void setTemplateId(Long templateId) {
         this.templateId = templateId;
+    }
+    public Long getUserId() {
+        return this.userId;
+    }
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

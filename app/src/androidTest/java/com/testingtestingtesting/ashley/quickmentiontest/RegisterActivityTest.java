@@ -27,7 +27,7 @@ public class RegisterActivityTest {
 
     private RegisterActivity rActivity;
 
-    private Instrumentation.ActivityMonitor monitor = getInstrumentation().addMonitor(ProfileActivity.class.getName(),null,false);
+    private Instrumentation.ActivityMonitor monitor = getInstrumentation().addMonitor(MainActivity.class.getName(),null,false);
 
     private FirebaseAuth mAuth;
 
@@ -62,8 +62,8 @@ public class RegisterActivityTest {
         Espresso.onView(withId(R.id.buttonRegister)).perform(click());
 
         // check if profile activity started
-        Activity profileActivity = getInstrumentation().waitForMonitorWithTimeout(monitor, 5000);
-        assertNotNull(profileActivity);
+        Activity mainActivity = getInstrumentation().waitForMonitorWithTimeout(monitor, 5000);
+        assertNotNull(mainActivity);
 
         // check if user logged in is test user
         assertEquals(mAuth.getCurrentUser().getEmail(), testEmail);
@@ -77,7 +77,7 @@ public class RegisterActivityTest {
         // delete test user
         mAuth.getCurrentUser().delete();
 
-        // sign out of profile activity
+        // sign out of main activity
         Espresso.onView(withId(R.id.buttonSignOut)).perform(click());
 
     }
