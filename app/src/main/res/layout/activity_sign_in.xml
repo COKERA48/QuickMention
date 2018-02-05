@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.testingtestingtesting.ashley.quickmentiontest.LoginActivity">
+    tools:context="com.testingtestingtesting.ashley.quickmentiontest.SignIn">
 
     <LinearLayout
         android:layout_centerHorizontal="true"
@@ -29,48 +29,44 @@
             android:layout_height="123dp"
             app:srcCompat="@drawable/quick_mention_logo"
             tools:layout_editor_absoluteY="-124dp"
-            tools:layout_editor_absoluteX="28dp" />
+            tools:layout_editor_absoluteX="28dp"
+            android:contentDescription="@string/content_description"/>
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="User Login" />
 
         <EditText
             android:layout_margin="15dp"
             android:inputType="textEmailAddress"
-            android:hint="Enter your email"
+            android:hint="@string/email_hint"
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:layout_margin="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:inputType="textPassword"
-            android:hint="Enter your password"
+            android:hint="@string/password_hint"
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:layout_margin="15dp"
-            android:text="Must be atleast 6 characters."
+            android:layout_marginLeft="18dp"
+            android:text="@string/character_limit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp" />
 
         <Button
             android:layout_margin="15dp"
-            android:text="Sign In"
+            android:text="@string/sign_in_button"
             android:id="@+id/buttonSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:textAlignment="center"
-            android:text="Not have an account? Sign up here."
+            android:text="@string/link_to_registration"
             android:id="@+id/textViewSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -19,7 +19,7 @@ import com.google.firebase.auth.*;
 
 import java.util.List;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
+public class SignUp extends AppCompatActivity implements View.OnClickListener{
 
     private Button buttonRegister;
     private EditText editTextEmail;
@@ -34,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
 
-        buttonRegister = (Button) findViewById(R.id.buttonRegister);
+        buttonRegister = (Button) findViewById(R.id.buttonSignUp);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         textViewSignIn = (TextView) findViewById(R.id.textViewSignIn);
@@ -103,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             finish();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }else {
-                            Toast.makeText(RegisterActivity.this, "Could not register. Please try again.",
+                            Toast.makeText(SignUp.this, "Could not register. Please try again.",
                                     Toast.LENGTH_SHORT).show();
 
                         }
@@ -127,7 +127,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (v == textViewSignIn){
             //open login activity
             finish();
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, SignIn.class));
         }
 
     }

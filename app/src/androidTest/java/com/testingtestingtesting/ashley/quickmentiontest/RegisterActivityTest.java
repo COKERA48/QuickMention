@@ -25,14 +25,14 @@ import static org.junit.Assert.*;
  */
 public class RegisterActivityTest {
 
-    private RegisterActivity rActivity;
+    private SignUp rActivity;
 
     private Instrumentation.ActivityMonitor monitor = getInstrumentation().addMonitor(MainActivity.class.getName(),null,false);
 
     private FirebaseAuth mAuth;
 
     @Rule
-    public ActivityTestRule<RegisterActivity> rActivityTestRule = new ActivityTestRule<>(RegisterActivity.class);
+    public ActivityTestRule<SignUp> rActivityTestRule = new ActivityTestRule<>(SignUp.class);
 
     @Before
     public void setUp() throws Exception {
@@ -59,7 +59,7 @@ public class RegisterActivityTest {
         Espresso.closeSoftKeyboard();
 
         // perform button click
-        Espresso.onView(withId(R.id.buttonRegister)).perform(click());
+        Espresso.onView(withId(R.id.buttonSignUp)).perform(click());
 
         // check if profile activity started
         Activity mainActivity = getInstrumentation().waitForMonitorWithTimeout(monitor, 5000);

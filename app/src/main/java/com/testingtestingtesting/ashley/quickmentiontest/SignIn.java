@@ -17,7 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class SignIn extends AppCompatActivity implements View.OnClickListener{
 
     private Button buttonSignIn;
     private EditText editTextEmail;
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         if (v == textViewSignUp){
             finish();
-            startActivity(new Intent(this, RegisterActivity.class));
+            startActivity(new Intent(this, SignUp.class));
         }
 
     }
