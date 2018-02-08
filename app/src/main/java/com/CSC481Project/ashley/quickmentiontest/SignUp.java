@@ -1,4 +1,4 @@
-package com.testingtestingtesting.ashley.quickmentiontest;
+package com.CSC481Project.ashley.quickmentiontest;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,22 +15,26 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.*;
 
-public class SignIn extends AppCompatActivity implements View.OnClickListener{
+import java.util.List;
 
-    private Button buttonSignIn;
+public class SignUp extends AppCompatActivity implements View.OnClickListener{
+
+    private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private TextView textViewSignUp;
-    private ProgressDialog progressDialog;
+    private TextView textViewSignIn;
     private FirebaseAuth mAuth;
+    private UserDao userDao;
+    private DaoSession daoSession;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -39,22 +44,29 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener{
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
 
-        buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
+        buttonRegister = (Button) findViewById(R.id.buttonSignUp);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignUp);
+        textViewSignIn = (TextView) findViewById(R.id.textViewSignIn);
 
-        buttonSignIn.setOnClickListener(this);
-        textViewSignUp.setOnClickListener(this);
+        buttonRegister.setOnClickListener(this);
+        textViewSignIn.setOnClickListener(this);
 
         progressDialog = new ProgressDialog(this);
 
+        daoSession = ((MyApplication) getApplication()).getDaoSession();
+        userDao = daoSession.getUserDao();
 
+        List<User> joes = userDao.queryBuilder().list();
+        Log.d("DaoExample", "Users in database, ID: " + joes);
     }
 
-    private void userLogin()
+
+
+
+    private void registerUser()
     {
-        String email = editTextEmail.getText().toString().trim();
+        final String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email))
@@ -69,33 +81,53 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener{
             Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (password.length() < 6)
+        {
+            Toast.makeText(this, "Password must be atleast 6 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        progressDialog.setMessage("Logging in...");
+        progressDialog.setMessage("Registering User...");
         progressDialog.show();
 
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
+
                         if(task.isSuccessful()) {
-                            //start main activity
+                            User user = new User();
+                            user.setEmail(email);
+                            userDao.insert(user);
+                            Log.d("DaoExample", "Inserted new user, ID: " + user.getId());
                             finish();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        }else {
+                            Toast.makeText(SignUp.this, "Could not register. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+
                         }
+                        progressDialog.dismiss();
 
                     }
                 });
     }
 
+
+
     @Override
     public void onClick(View v) {
-        if (v == buttonSignIn) {
-            userLogin();
+        if (v == buttonRegister)
+        {
+            registerUser();
+
         }
-        if (v == textViewSignUp){
+
+
+        if (v == textViewSignIn){
+            //open login activity
             finish();
-            startActivity(new Intent(this, SignUp.class));
+            startActivity(new Intent(this, SignIn.class));
         }
 
     }

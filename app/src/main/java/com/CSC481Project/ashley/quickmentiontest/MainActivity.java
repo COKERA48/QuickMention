@@ -1,4 +1,4 @@
-package com.testingtestingtesting.ashley.quickmentiontest;
+package com.CSC481Project.ashley.quickmentiontest;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

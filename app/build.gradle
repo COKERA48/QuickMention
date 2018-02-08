@@ -6,7 +6,7 @@ android {
     dataBinding.enabled = true
     defaultConfig {
 
-        applicationId "com.testingtestingtesting.ashley.quickmentiontest"
+        applicationId "com.CSC481Project.ashley.quickmentiontest"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 10

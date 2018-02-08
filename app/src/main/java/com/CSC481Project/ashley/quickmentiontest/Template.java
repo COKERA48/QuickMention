@@ -1,9 +1,8 @@
-package com.testingtestingtesting.ashley.quickmentiontest;
+package com.CSC481Project.ashley.quickmentiontest;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 
-import java.sql.Time;
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -12,8 +11,7 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 
 @Entity
-public class Task {
-
+public class Template {
     @Id
     private Long id;
 
@@ -24,23 +22,20 @@ public class Task {
     //private Time endTime;
     private Boolean isReoccurring;
     //need to add how often it will repeat
-    private Long templateId;
+    private Long categoryId;
+    @Generated(hash = 1757308705)
 
-    private Long userId;
-
-    @Generated(hash = 456358077)
-    public Task(Long id, String name, Date startDate, Date endDate,
-            Boolean isReoccurring, Long templateId, Long userId) {
+    public Template(Long id, String name, Date startDate, Date endDate,
+            Boolean isReoccurring, Long categoryId) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.isReoccurring = isReoccurring;
-        this.templateId = templateId;
-        this.userId = userId;
+        this.categoryId = categoryId;
     }
-    @Generated(hash = 733837707)
-    public Task() {
+    @Generated(hash = 227162429)
+    public Template() {
     }
     public Long getId() {
         return this.id;
@@ -72,16 +67,10 @@ public class Task {
     public void setIsReoccurring(Boolean isReoccurring) {
         this.isReoccurring = isReoccurring;
     }
-    public Long getTemplateId() {
-        return this.templateId;
+    public Long getCategoryId() {
+        return this.categoryId;
     }
-    public void setTemplateId(Long templateId) {
-        this.templateId = templateId;
-    }
-    public Long getUserId() {
-        return this.userId;
-    }
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }

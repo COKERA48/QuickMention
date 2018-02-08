@@ -1,4 +1,4 @@
-package com.testingtestingtesting.ashley.quickmentiontest;
+package com.CSC481Project.ashley.quickmentiontest;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
