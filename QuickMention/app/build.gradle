@@ -32,7 +32,6 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.google.firebase:firebase-database:10.0.1'
     testCompile 'junit:junit:4.12'
-    compile 'org.greenrobot:greendao:3.2.2'
 }
 
 
@@ -42,4 +41,3 @@ dependencies {
 
 
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'org.greenrobot.greendao'

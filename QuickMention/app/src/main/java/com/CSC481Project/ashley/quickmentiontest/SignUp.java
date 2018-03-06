@@ -26,8 +26,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
     private EditText editTextPassword;
     private TextView textViewSignIn;
     private FirebaseAuth mAuth;
-    private UserDao userDao;
-    private DaoSession daoSession;
 
     private ProgressDialog progressDialog;
 
@@ -54,11 +52,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
 
         progressDialog = new ProgressDialog(this);
 
-        daoSession = ((MyApplication) getApplication()).getDaoSession();
-        userDao = daoSession.getUserDao();
-
-        List<User> joes = userDao.queryBuilder().list();
-        Log.d("DaoExample", "Users in database, ID: " + joes);
     }
 
 
@@ -96,10 +89,6 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()) {
-                            User user = new User();
-                            user.setEmail(email);
-                            userDao.insert(user);
-                            Log.d("DaoExample", "Inserted new user, ID: " + user.getId());
                             finish();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }else {

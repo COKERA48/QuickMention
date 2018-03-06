@@ -8,11 +8,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.support.v7.widget.Toolbar;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private ListView listViewUpcomingTasks;
     private Button buttonNewTask;
     private Button buttonSignOut;
 
@@ -20,6 +25,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        listViewUpcomingTasks = (ListView) findViewById(R.id.listViewUpcomingTasks);
+        listViewUpcomingTasks.setLayoutParams(new LinearLayout.LayoutParams
+                                             (LinearLayout.LayoutParams.FILL_PARENT, 4));
 
         buttonNewTask = (Button) findViewById(R.id.buttonNewTask);
         buttonNewTask.setOnClickListener(this);
@@ -40,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.action_sign_out:
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getApplicationContext(), SignIn.class));
+                break;
+
         }
         return super.onOptionsItemSelected(item);
 
@@ -47,7 +58,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.buttonNewTask:
+                startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
+                break;
+        }
 
 
     }

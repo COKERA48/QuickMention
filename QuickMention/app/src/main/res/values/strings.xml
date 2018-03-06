@@ -17,6 +17,16 @@
     <string name="sign_out_button">Sign Out</string>
     <string name="link_to_login">Already a member? Sign in here.</string>
 
-    <!--    logo content description -->
+    <!--    logo content description    -->
     <string name="content_description">Quick Mention Logo</string>
+
+    <!--    Repeat task options     -->
+    <string-array name="repeat_options">
+        <item>Never</item>
+        <item>Every Day</item>
+        <item>Every Week</item>
+        <item>Every 2 Weeks</item>
+        <item>Every Month</item>
+        <item>Every Year</item>
+    </string-array>
 </resources>
