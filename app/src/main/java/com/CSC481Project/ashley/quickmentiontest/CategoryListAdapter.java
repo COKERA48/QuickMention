@@ -8,17 +8,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by davidortego on 3/6/18.
  */
 
-public class CustomListAdapter extends ArrayAdapter<String> {
+public class CategoryListAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
-    private final String[] catName;
+    private final ArrayList<String> catName;
     private final Integer[] imgId;
 
-    public CustomListAdapter(Activity context, String[] catName, Integer[] imgId) {
+    CategoryListAdapter(Activity context, ArrayList<String> catName, Integer[] imgId) {
         super(context, R.layout.single_row_category, catName);
         // TODO Auto-generated constructor stub
 
@@ -34,7 +36,7 @@ public class CustomListAdapter extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.textView);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 
-        txtTitle.setText(catName[position]);
+        txtTitle.setText(catName.get(position));
         imageView.setImageResource(imgId[position]);
         return rowView;
 

@@ -7,13 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -23,14 +18,7 @@ public class CategoryActivity extends AppCompatActivity {
     DatabaseHelper dbHelper;
     private ListView listViewCategories;
 
-    // Added for CustomListAdapter:
-    ListView list;
-    String[] catName ={
-            "Home",
-            "Auto",
-            "Health"
-    };
-
+    // Added for CategoryListAdapter:
     Integer[] imgId={
             R.drawable.ic_home_black_24dp,
             R.drawable.ic_directions_car_black_24dp,
@@ -79,14 +67,13 @@ public class CategoryActivity extends AppCompatActivity {
 
         Cursor data = dbHelper.getCategories();
 
+        // Pulls categories from database
         ArrayList<String> listData = new ArrayList<>();
         while(data.moveToNext()) {
             listData.add(data.getString(1));
         }
 
-        /*ListAdapter adapter = new ArrayAdapter<>(this, R.layout.single_row_category, R.id.textView, listData);
-        listViewCategories.setAdapter(adapter);*/
-        CustomListAdapter adapter = new CustomListAdapter(this, catName, imgId);
+        CategoryListAdapter adapter = new CategoryListAdapter(this, listData, imgId);
         listViewCategories = (ListView) findViewById(R.id.listViewCategories);
         listViewCategories.setAdapter(adapter);
     }
