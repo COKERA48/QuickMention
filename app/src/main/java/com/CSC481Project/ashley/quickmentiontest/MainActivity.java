@@ -2,6 +2,10 @@ package com.CSC481Project.ashley.quickmentiontest;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,13 +24,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private ListView listViewUpcomingTasks;
     private Button buttonNewTask;
     private Button buttonSignOut;
     private static final String TAG = "MainActivity";
     DatabaseHelper dbHelper;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,57 +41,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
 
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        navigation = (NavigationView)findViewById(R.id.navigationView);
+        navigation.setNavigationItemSelectedListener(this);
         listViewUpcomingTasks = (ListView) findViewById(R.id.listViewUpcomingTasks);
 
         // == Not working for me for some reason ==
         // listViewUpcomingTasks.setLayoutParams(new LinearLayout.LayoutParams
         //                                      (LinearLayout.LayoutParams.FILL_PARENT, 4));
 
-        buttonNewTask = (Button) findViewById(R.id.buttonNewTask);
-        buttonNewTask.setOnClickListener(this);
+
 
         dbHelper = new DatabaseHelper(this);
         populateListView();
-
-        /*
-        Toolbar is being used for sign out. If we get rid of user logins for good then we can
-        get rid of the toolbar. OR we could add other things to it instead.
-         */
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
     }
-
-    // Creates toolbar menu
-    public boolean onCreateOptionsMenu (Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
-        return true;
-    }
-
-    // Listener for toolbar
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()) {
-            case R.id.action_sign_out:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getApplicationContext(), SignIn.class));
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonNewTask:
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.newTask:
                 startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
-                break;
+                return true;
         }
-
-
+        return false;
     }
 
     // Displays tasks to listView
@@ -106,4 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TaskListAdapter adapter = new TaskListAdapter(this, taskNames, taskDates, taskTimes);
         listViewUpcomingTasks.setAdapter(adapter);
     }
+
+
 }
