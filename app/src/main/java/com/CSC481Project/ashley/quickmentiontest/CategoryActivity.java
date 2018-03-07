@@ -52,6 +52,7 @@ public class CategoryActivity extends AppCompatActivity {
                     Intent intent = new Intent(CategoryActivity.this, TemplateActivity.class);
                     intent.putExtra("categoryID", itemID);
                     intent.putExtra("categoryName", catName);
+                    intent.putExtra("categoryIcon", imgId[itemID-1]);
                     startActivity(intent);
                 }
                 else {

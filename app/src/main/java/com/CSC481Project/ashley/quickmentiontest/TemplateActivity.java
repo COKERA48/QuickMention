@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class TemplateActivity extends AppCompatActivity {
     private ListView listViewTemplates;
     private int catId;
     private String catName;
+    private Integer catIcon;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +35,14 @@ public class TemplateActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null ) {
             catId = bundle.getInt("categoryID");
-            catName = bundle.getString("categoryName");     // May use this at top of activity as a header
+            catName = bundle.getString("categoryName");
+            catIcon = bundle.getInt("categoryIcon");
         }
 
-
+        image = (ImageView) findViewById(R.id.image);
+        image.setImageResource(catIcon);
+        TextView textViewCatName = (TextView)findViewById(R.id.textViewCatName);
+        textViewCatName.setText(catName);
         listViewTemplates = (ListView) findViewById(R.id.listViewTemplates);
         dbHelper = new DatabaseHelper(this);
 
