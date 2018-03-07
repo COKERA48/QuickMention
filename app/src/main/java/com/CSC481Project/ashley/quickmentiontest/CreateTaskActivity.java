@@ -27,10 +27,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private TimePickerDialog.OnTimeSetListener mTimeSetListener2;
     Calendar c, c2;
     DatabaseHelper dbHelper;
-
+    Spinner spinner;
     private int year, month, day, hourStart, minuteStart, hourEnd, minuteEnd;
     private Button buttonSaveTask;
-    String date, timeStart, timeEnd, formattedDate;
+    String date, timeStart, timeEnd, formattedDate, repeats;
 
 
 
@@ -46,14 +46,25 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         textViewEndTimeInput = (TextView) findViewById(R.id.textViewEndTimeInput);
         editTextNotes = (EditText) findViewById(R.id.editTextNotes);
         buttonSaveTask = (Button) findViewById(R.id.buttonSaveTask);
+        spinner = (Spinner) findViewById(R.id.spinner);
         dbHelper = new DatabaseHelper(this);
 
-         /* Gets selected template name and displays */
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null ) {
+            /* Gets selected template name and displays */
             String templateName = bundle.getString("templateName");
             editTextTaskName.setText(templateName);
 
+            // Gets repeat value of template and sets spinner to that value
+            repeats = bundle.getString("templateRepeats");
+            String[] repeatStrings = this.getResources().getStringArray(R.array.repeat_options);
+            for (int i = 0; i < repeatStrings.length; i++)
+            {
+                if (repeatStrings[i].equals(repeats)) {
+                    spinner.setSelection(i);
+                }
+            }
         }
 
 
@@ -140,6 +151,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         /* Displays string */
         textViewStartTimeInput.setText(timeStart);
+
         /* Ensures that the start time is before end time */
         checkTimes();
     }
