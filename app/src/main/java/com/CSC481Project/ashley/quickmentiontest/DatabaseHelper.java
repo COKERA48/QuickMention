@@ -14,7 +14,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 13;
+    private static final int DB_VERSION = 14;
 
     /* table names */
     private static final String TABLE_TASK = "tasks";
@@ -24,8 +24,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /* column names */
     private static final String ID = "ID";
     private static final String NAME = "name";
-    private static final String DATE = "date";
+    private static final String START_DATE = "startDate";
     private static final String START_TIME = "startTime";
+    private static final String END_DATE = "endDate";
     private static final String END_TIME = "endTime";
     private static final String REPEATS = "repeats";
     private static final String NOTES = "notes";
@@ -42,8 +43,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTableTask = "CREATE TABLE " + TABLE_TASK + " (" +
                 ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NAME + " TEXT, " +
-                DATE + " TEXT, " +
+                START_DATE + " TEXT, " +
                 START_TIME + " TEXT, " +
+                END_DATE + " TEXT, " +
                 END_TIME + " TEXT, " +
                 REPEATS + " TEXT, " +
                 NOTES + " TEXT)";
@@ -87,12 +89,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /* Inserts values into task table */
-    boolean addTask(String name, String date, String startTime, String endTime, String repeats, String notes) {
+    boolean addTask(String name, String startDate, String startTime, String endDate, String endTime, String repeats, String notes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(NAME, name);
-        contentValues.put(DATE, date);
+        contentValues.put(START_DATE, startDate);
         contentValues.put(START_TIME, startTime);
+        contentValues.put(END_DATE, endDate);
         contentValues.put(END_TIME, endTime);
         contentValues.put(REPEATS, repeats);
         contentValues.put(NOTES, notes);
