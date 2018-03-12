@@ -1,7 +1,10 @@
 package com.CSC481Project.ashley.quickmentiontest;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,7 +23,6 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener {
@@ -194,7 +196,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
 
     public void checkTimes() {
-
         if (calStart.compareTo(calEnd) > 0) {
             Log.d(TAG, "TaskActivity: checkTimes: Start date/time is after End date/time");
             buttonSaveTask.setEnabled(false);
@@ -204,12 +205,12 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
 
     public void saveTask() {
-
         String name = editTextTaskName.getText().toString();
         String notes = editTextNotes.getText().toString();
         String repeats = String.valueOf(spinner.getSelectedItem());
         boolean insertData = dbHelper.addTask(name, formattedStartDate, formattedStartTime, formattedEndDate, formattedEndTime, repeats, notes);
         if(insertData) {
+            setAlarm(calStart.getTimeInMillis());
             Toast.makeText(this, "Data added successfully", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(CreateTaskActivity.this, DisplayTasksActivity.class);
             startActivity(intent);
@@ -217,6 +218,17 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         else Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
 
+    }
+
+    private void setAlarm(long timeInMillis) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, Alarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        if(alarmManager != null)
+            alarmManager.setRepeating(AlarmManager.RTC, timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -254,7 +266,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.buttonSaveTask:
                 saveTask();
-
                 break;
 
         }
