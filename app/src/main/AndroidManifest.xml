@@ -27,6 +27,7 @@
         <receiver android:name=".Alarm"
             android:enabled="true"
             android:exported="true"/>
+        <activity android:name=".CalendarViewActivity"></activity>
     </application>
 
 </manifest>

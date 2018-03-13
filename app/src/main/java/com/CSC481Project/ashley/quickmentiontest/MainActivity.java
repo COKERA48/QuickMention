@@ -74,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.newTask:
                 startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
                 return true;
+            case R.id.calendar:
+                startActivity(new Intent(getApplicationContext(), CalendarViewActivity.class));
+                return true;
+
         }
         return false;
     }
