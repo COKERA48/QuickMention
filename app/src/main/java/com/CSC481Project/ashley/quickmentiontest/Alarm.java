@@ -36,6 +36,5 @@ public class Alarm extends BroadcastReceiver {
                 .setSound(alarmSound)
                 .setAutoCancel(true);
         notificationManager.notify(100,builder.build());
-
     }
 }
