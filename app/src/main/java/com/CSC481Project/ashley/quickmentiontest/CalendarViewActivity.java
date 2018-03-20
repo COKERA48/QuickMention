@@ -50,15 +50,13 @@ public class CalendarViewActivity extends AppCompatActivity {
     private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data to ListView");
 
-        Cursor data = dbHelper.getTasks();
+        Cursor data = dbHelper.getTasks(selectedDate);
 
         ArrayList<String> listData = new ArrayList<>();
         while(data.moveToNext()) {
             textbox.setText(selectedDate + " " + data.getString(2));
             //only add the task to the listView if its start date matches the selected date on the calendarView
-            if (selectedDate.equals(data.getString(2))) {
-                listData.add(data.getString(1) + "\t\t\t" + data.getString(2) + "\t\t\t" + data.getString(3) + "\t\t\t" + data.getString(5));
-            }
+            listData.add(data.getString(1) + "\t\t\t" + data.getString(2) + "\t\t\t" + data.getString(3) + "\t\t\t" + data.getString(5));
         }
 
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);

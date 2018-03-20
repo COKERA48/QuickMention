@@ -115,6 +115,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    /* Return tasks with a start_date that matches dateString
+     * dateString must be formatted as MM/dd/yyyy
+      * including leading zero on the month */
+    Cursor getTasks(String dateString){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_TASK + " WHERE " + START_DATE + " = '" +
+                dateString + "'";
+        return db.rawQuery(query, null);
+    }
+
     /* Returns category cursor */
     Cursor getCategories() {
         SQLiteDatabase db = this.getWritableDatabase();
