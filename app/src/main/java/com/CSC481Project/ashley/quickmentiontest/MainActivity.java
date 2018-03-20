@@ -21,7 +21,10 @@ import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -86,7 +89,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void populateListView() {
         Log.d(TAG, "populateListView: Displaying data to ListView");
 
-        Cursor data = dbHelper.getTasks();
+        Calendar c = Calendar.getInstance();
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
+        Cursor data = dbHelper.getTasksByDate(dateFormat.format(c.getTime()));
 
         ArrayList<String> taskNames = new ArrayList<>();
         ArrayList<String> taskDates = new ArrayList<>();

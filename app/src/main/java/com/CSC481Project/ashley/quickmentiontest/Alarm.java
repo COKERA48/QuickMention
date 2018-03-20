@@ -5,11 +5,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -28,7 +26,7 @@ public class Alarm extends BroadcastReceiver {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        Builder builder = new Builder(context)
                 .setSmallIcon(R.mipmap.qm_launch_logo)
                 .setContentIntent(pendingIntent)
                 .setContentText("this is my notification")
