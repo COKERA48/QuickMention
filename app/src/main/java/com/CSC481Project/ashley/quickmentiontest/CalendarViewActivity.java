@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +25,7 @@ public class CalendarViewActivity extends AppCompatActivity {
     private static final String TAG = "CalendarViewActivity";
     private String selectedDate;
     private SimpleDateFormat dateFormat;
+    private DecimalFormat monthFormatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class CalendarViewActivity extends AppCompatActivity {
         textbox = (TextView) findViewById(R.id.calendarViewTextbox);
         dbHelper = new DatabaseHelper(this);
         dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        monthFormatter = new DecimalFormat("00");
+        selectedDate = dateFormat.format(new Date(calendarView.getDate())); //get current date in mm/dd/yyyy
         populateListView();
 
     }
@@ -51,8 +55,10 @@ public class CalendarViewActivity extends AppCompatActivity {
         ArrayList<String> listData = new ArrayList<>();
         while(data.moveToNext()) {
             textbox.setText(selectedDate + " " + data.getString(2));
-            listData.add(data.getString(1) + "\t\t\t" + data.getString(2) + "\t\t\t" + data.getString(3) + "\t\t\t" + data.getString(5));
-
+            //only add the task to the listView if its start date matches the selected date on the calendarView
+            if (selectedDate.equals(data.getString(2))) {
+                listData.add(data.getString(1) + "\t\t\t" + data.getString(2) + "\t\t\t" + data.getString(3) + "\t\t\t" + data.getString(5));
+            }
         }
 
         ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
@@ -70,8 +76,8 @@ public class CalendarViewActivity extends AppCompatActivity {
         @Override
         public void onSelectedDayChange(CalendarView view, int year, int month, int day)
         {
-
-            selectedDate = (month+1) + "/" + day + "/" + year;
+            //formatter makes sure month has leading zero so strings can match
+            selectedDate = monthFormatter.format(month + 1) + "/" + day + "/" + year;
             populateListView();
         }
     }
