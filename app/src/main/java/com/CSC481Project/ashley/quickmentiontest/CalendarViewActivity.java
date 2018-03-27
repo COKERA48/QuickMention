@@ -1,9 +1,13 @@
 package com.CSC481Project.ashley.quickmentiontest;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ListAdapter;
@@ -16,9 +20,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CalendarViewActivity extends AppCompatActivity {
+public class CalendarViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private CalendarView calendarView;
+    private NavigationView menu;
     private ListView listview;
     private TextView textbox;
     private DatabaseHelper dbHelper;
@@ -26,6 +31,7 @@ public class CalendarViewActivity extends AppCompatActivity {
     private String selectedDate;
     private SimpleDateFormat dateFormat;
     private DecimalFormat monthFormatter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,8 @@ public class CalendarViewActivity extends AppCompatActivity {
         //calendarView is already set to current date on creation
         //calendarView.setDate(new Date().getTime()); //set view to current date
 
+        menu = (NavigationView) findViewById(R.id.navigationView);
+        menu.setNavigationItemSelectedListener(this); //have app call onNavigationItemSelected() when menu option is used
         listview = (ListView) findViewById(R.id.calendarListView);
         textbox = (TextView) findViewById(R.id.calendarViewTextbox);
         dbHelper = new DatabaseHelper(this);
@@ -78,5 +86,27 @@ public class CalendarViewActivity extends AppCompatActivity {
             selectedDate = monthFormatter.format(month + 1) + "/" + day + "/" + year;
             populateListView();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.home:
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                return true;
+            case R.id.newTask:
+                startActivity(new Intent(getApplicationContext(), CreateTaskActivity.class));
+                return true;
+            case R.id.allTasks:
+                startActivity(new Intent(getApplicationContext(), DisplayTasksActivity.class));
+                return true;
+        }
+
+        return false;
     }
 }
