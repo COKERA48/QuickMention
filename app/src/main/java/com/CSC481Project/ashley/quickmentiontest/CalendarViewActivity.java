@@ -29,7 +29,6 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle menuToggle;
     private ListView listview;
-    private TextView textbox;
     private DatabaseHelper dbHelper;
     private static final String TAG = "CalendarViewActivity";
     private String selectedDate;
@@ -58,7 +57,6 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
         //calendarView is already set to current date on creation
         //calendarView.setDate(new Date().getTime()); //set view to current date
         listview = (ListView) findViewById(R.id.calendarListView);
-        textbox = (TextView) findViewById(R.id.calendarViewTextbox);
         dbHelper = new DatabaseHelper(this);
         dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         monthFormatter = new DecimalFormat("00");
@@ -74,7 +72,6 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
 
         ArrayList<String> listData = new ArrayList<>();
         while(data.moveToNext()) {
-            textbox.setText(selectedDate + " " + data.getString(2));
             //only add the task to the listView if its start date matches the selected date on the calendarView
             listData.add(data.getString(1) + "\t\t\t" + data.getString(2) + "\t\t\t" + data.getString(3) + "\t\t\t" + data.getString(5));
         }
