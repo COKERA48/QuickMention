@@ -1,29 +1,29 @@
 package com.CSC481Project.ashley.quickmentiontest;
 
+import android.app.LoaderManager;
+import android.content.ContentUris;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.SimpleCursorAdapter;
 
-import java.util.ArrayList;
 
-public class CategoryActivity extends AppCompatActivity {
+public class CategoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "CategoryActivity";
-    DatabaseHelper dbHelper;
     private ListView listViewCategories;
+    SimpleCursorAdapter adapter;
 
-    // Added for CategoryListAdapter:
-    Integer[] imgId={
-            R.drawable.ic_home_black_24dp,
-            R.drawable.ic_directions_car_black_24dp,
-            R.drawable.ic_local_hospital_black_24dp
-    };
+    private static final int VEHICLE_LOADER = 0;
+
+
 
 
     @Override
@@ -33,49 +33,63 @@ public class CategoryActivity extends AppCompatActivity {
         setTitle("Choose Category");
 
         listViewCategories = (ListView) findViewById(R.id.listViewCategories);
-        dbHelper = new DatabaseHelper(this);
 
-        populateListView();
 
+        adapter = new SimpleCursorAdapter(this,
+                R.layout.single_row_category,
+                null,
+                new String[] { QMContract.CategoryEntry.KEY_ICON,QMContract.CategoryEntry.KEY_NAME },
+                new int[] { R.id.icon, R.id.textView }, 0);
+
+        listViewCategories.setAdapter(adapter);
         listViewCategories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String catName = adapterView.getItemAtPosition(i).toString();
-                Log.d(TAG, "CategoryActivity: onItemClick: You've clicked on: " + catName);
-                Cursor catData = dbHelper.getCategoryID(catName);
-                int itemID = -1;
-                while(catData.moveToNext()) {
-                    itemID = catData.getInt(0);
-                }
-                if (itemID > -1) {
-                    Log.d(TAG, "CategoryActivity: onItemClick: the id is: " + itemID);
-                    Intent intent = new Intent(CategoryActivity.this, TemplateActivity.class);
-                    intent.putExtra("categoryID", itemID);
-                    intent.putExtra("categoryName", catName);
-                    intent.putExtra("categoryIcon", imgId[itemID-1]);
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(CategoryActivity.this, "No id associated with that category.", Toast.LENGTH_SHORT).show();
-                }
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                Intent intent = new Intent(CategoryActivity.this, TemplateActivity.class);
+
+                Uri currentVehicleUri = ContentUris.withAppendedId(QMContract.CategoryEntry.CONTENT_URI, id);
+
+
+                // Set the URI on the data field of the intent
+                intent.setData(currentVehicleUri);
+
+                startActivity(intent);
 
             }
         });
+
+        getLoaderManager().initLoader(VEHICLE_LOADER, null, this);
+
+
     }
 
-    private void populateListView() {
-        Log.d(TAG, "populateListView: Displaying Categories to ListView");
 
-        Cursor data = dbHelper.getCategories();
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = {
+                QMContract.CategoryEntry._ID2,
+                QMContract.CategoryEntry.KEY_NAME,
+                QMContract.CategoryEntry.KEY_ICON
 
-        // Pulls categories from database
-        ArrayList<String> listData = new ArrayList<>();
-        while(data.moveToNext()) {
-            listData.add(data.getString(1));
-        }
 
-        CategoryListAdapter adapter = new CategoryListAdapter(this, listData, imgId);
-        listViewCategories = (ListView) findViewById(R.id.listViewCategories);
-        listViewCategories.setAdapter(adapter);
+        };
+
+        return new CursorLoader(this,   // Parent activity context
+                QMContract.CategoryEntry.CONTENT_URI,   // Provider content URI to query
+                projection,             // Columns to include in the resulting Cursor
+                null,                   // No selection clause
+                null,                   // No selection arguments
+                null);                  // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        adapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }

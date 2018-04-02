@@ -25,6 +25,10 @@
         <activity android:name=".CategoryActivity" />
         <activity android:name=".TemplateActivity"/>
         <activity android:name=".CalendarViewActivity" />
+        <provider
+            android:name=".QMContentProvider"
+            android:authorities="com.CSC481Project.ashley.quickmentiontest"
+            android:exported="false" />
         <receiver android:name=".Alarm"
             android:enabled="true"
             android:exported="true"/>

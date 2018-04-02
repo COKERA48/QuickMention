@@ -14,7 +14,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 14;
+    private static final int DB_VERSION = 15;
 
     /* table names */
     private static final String TABLE_TASK = "tasks";
@@ -39,81 +39,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         /* Create task table */
-        String createTableTask = "CREATE TABLE " + TABLE_TASK + " (" +
-                ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                NAME + " TEXT, " +
-                START_DATE + " TEXT, " +
-                START_TIME + " TEXT, " +
-                END_DATE + " TEXT, " +
-                END_TIME + " TEXT, " +
-                REPEATS + " TEXT, " +
-                NOTES + " TEXT)";
+        String createTableTask = "CREATE TABLE " + QMContract.TaskEntry.TABLE_NAME + " (" +
+                QMContract.TaskEntry._ID1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                QMContract.TaskEntry.KEY_NAME + " TEXT, " +
+                QMContract.TaskEntry.KEY_START_DATE + " TEXT, " +
+                QMContract.TaskEntry.KEY_START_TIME + " TEXT, " +
+                QMContract.TaskEntry.KEY_END_DATE + " TEXT, " +
+                QMContract.TaskEntry.KEY_END_TIME + " TEXT, " +
+                QMContract.TaskEntry.KEY_REPEATS + " TEXT, " +
+                QMContract.TaskEntry.KEY_NOTES + " TEXT)";
         db.execSQL(createTableTask);
 
-        /* Create category table */
-        String createTableCategory = "CREATE TABLE " + TABLE_CATEGORY + " (" +
-                ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                NAME + " TEXT)";
+        String createTableCategory = "CREATE TABLE " + QMContract.CategoryEntry.TABLE_NAME + " (" +
+                QMContract.CategoryEntry._ID2 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                QMContract.CategoryEntry.KEY_NAME + " TEXT, " +
+                QMContract.CategoryEntry.KEY_ICON + " INTEGER)";
         db.execSQL(createTableCategory);
 
-        String createTableTemplate = "CREATE TABLE " + TABLE_TEMPLATE + " (" +
-                ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                NAME + " TEXT, " +
-                REPEATS + " TEXT, " +
-                TEMPLATE_CAT + " INTEGER, " +
-                "FOREIGN KEY (" + TEMPLATE_CAT + ") REFERENCES " + TABLE_CATEGORY + "(" + ID + "))";
+
+        String createTableTemplate = "CREATE TABLE " + QMContract.TemplateEntry.TABLE_NAME + " (" +
+                QMContract.TemplateEntry._ID3 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                QMContract.TemplateEntry.KEY_NAME + " TEXT, " +
+                QMContract.TemplateEntry.KEY_REPEATS + " TEXT, " +
+                QMContract.TemplateEntry.KEY_TEMP_CAT + " INTEGER, " +
+                "FOREIGN KEY (" + QMContract.TemplateEntry.KEY_TEMP_CAT + ") REFERENCES " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry._ID + "))";
         db.execSQL(createTableTemplate);
 
         /* Insert values into category table */
-        db.execSQL("INSERT INTO " + TABLE_CATEGORY + "(" + NAME + ") VALUES ('Home')");
-        db.execSQL("INSERT INTO " + TABLE_CATEGORY + "(" + NAME + ") VALUES ('Auto')");
-        db.execSQL("INSERT INTO " + TABLE_CATEGORY + "(" + NAME + ") VALUES ('Health')");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Home', " + R.drawable.ic_home_black_24dp + ")");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Auto', " + R.drawable.ic_directions_car_black_24dp + ")");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Health', " + R.drawable.ic_local_hospital_black_24dp + ")");
 
 
 
         /* Insert values into template table */
-        db.execSQL("INSERT INTO " + TABLE_TEMPLATE + "(" + NAME + ", " + REPEATS + ", " + TEMPLATE_CAT + ") VALUES ('Do Laundry', 'Every Week', 1 )");
-        db.execSQL("INSERT INTO " + TABLE_TEMPLATE + "(" + NAME + ", " + REPEATS + ", " + TEMPLATE_CAT + ") VALUES ('Mow Lawn', 'Every 2 Weeks', 1 )");
-        db.execSQL("INSERT INTO " + TABLE_TEMPLATE + "(" + NAME + ", " + REPEATS + ", " + TEMPLATE_CAT + ") VALUES ('Wash Car', 'Every Week', 2 )");
-        db.execSQL("INSERT INTO " + TABLE_TEMPLATE + "(" + NAME + ", " + REPEATS + ", " + TEMPLATE_CAT + ") VALUES ('Drink Water', 'Every Day', 3 )");
+        db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Do Laundry', 'Every Week', 1 )");
+        db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Cut Grass', 'Every 2 Weeks', 1 )");
+        db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Wash Car', 'Every Week', 2 )");
+        db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Drink Water', 'Every Day', 3 )");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASK);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEMPLATE);
+        db.execSQL("DROP TABLE IF EXISTS " + QMContract.TaskEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + QMContract.CategoryEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + QMContract.TemplateEntry.TABLE_NAME);
         onCreate(db);
 
-    }
-
-    /* Inserts values into task table */
-    boolean addTask(String name, String startDate, String startTime, String endDate, String endTime, String repeats, String notes) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(NAME, name);
-        contentValues.put(START_DATE, startDate);
-        contentValues.put(START_TIME, startTime);
-        contentValues.put(END_DATE, endDate);
-        contentValues.put(END_TIME, endTime);
-        contentValues.put(REPEATS, repeats);
-        contentValues.put(NOTES, notes);
-
-        Log.d(TAG, "addTask: Adding " + name + " to " + TABLE_TASK);
-
-        /* Returns -1 if data did not get inserted correctly */
-        long result = db.insert(TABLE_TASK, null, contentValues);
-        return (result != -1);
-    }
-
-    /* Returns task cursor */
-    Cursor getTasks() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_TASK;
-        return db.rawQuery(query, null);
 
     }
+
+
 
     /* Return tasks with a start_date that matches dateString
      * dateString must be formatted as MM/dd/yyyy
@@ -127,37 +109,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    Cursor getTasksByDate(String date) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_TASK + " WHERE " + START_DATE + " = '" + date + "'";
-        return db.rawQuery(query, null);
-    }
-
-    /* Returns category cursor */
-    Cursor getCategories() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CATEGORY;
-        return db.rawQuery(query, null);
-    }
-
-    /* Returns all templates for specified category id */
-    Cursor getTemplates(int catID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_TEMPLATE + " WHERE " + TEMPLATE_CAT + " = " + catID;
-        return db.rawQuery(query, null);
-    }
-
-    /* Returns category id matching category name */
-    Cursor getCategoryID(String catName) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + ID + " FROM " + TABLE_CATEGORY + " WHERE " + NAME + " = '" + catName + "'";
-        return db.rawQuery(query, null);
-    }
-
-    /* Returns template repeat value matching template name */
-    Cursor getTemplateRepeatValue(String tempName) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + REPEATS + " FROM " + TABLE_TEMPLATE + " WHERE " + NAME + " = '" + tempName + "'";
-        return db.rawQuery(query, null);
-    }
 }

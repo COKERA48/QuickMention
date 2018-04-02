@@ -1,29 +1,32 @@
 package com.CSC481Project.ashley.quickmentiontest;
 
+import android.app.LoaderManager;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+public class TemplateActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-public class TemplateActivity extends AppCompatActivity {
     private static final String TAG = "TemplateActivity";
-    DatabaseHelper dbHelper;
     private ListView listViewTemplates;
     private int catId;
     private String catName;
     private Integer catIcon;
     ImageView image;
+    private static final int VEHICLE_LOADER = 0;
+    SimpleCursorAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,65 +34,83 @@ public class TemplateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_template);
         setTitle("Choose Template");
 
-        // Gets chosen category id and name
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null ) {
-            catId = bundle.getInt("categoryID");
-            catName = bundle.getString("categoryName");
-            catIcon = bundle.getInt("categoryIcon");
-        }
+        Intent intent = getIntent();
+        Uri mCurrentReminderUri = intent.getData();
 
+        ContentResolver mResolver = this.getContentResolver();
+        Cursor cursor = mResolver.query(mCurrentReminderUri, new String[] {
+                QMContract.CategoryEntry._ID, QMContract.CategoryEntry.KEY_NAME, QMContract.CategoryEntry.KEY_ICON }, null, null, null);
+        if (cursor.moveToFirst()) {
+            catId = cursor.getInt(cursor
+                    .getColumnIndex(QMContract.CategoryEntry._ID));
+            catName = cursor.getString(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_NAME));
+            catIcon = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_ICON));
+
+        }
         image = (ImageView) findViewById(R.id.image);
         image.setImageResource(catIcon);
-        TextView textViewCatName = (TextView)findViewById(R.id.textViewCatName);
+        TextView textViewCatName = (TextView) findViewById(R.id.textViewCatName);
         textViewCatName.setText(catName);
-        listViewTemplates = (ListView) findViewById(R.id.listViewTemplates);
-        dbHelper = new DatabaseHelper(this);
 
-        populateListView();
+        adapter = new SimpleCursorAdapter(this,
+                R.layout.single_row_template,
+                null,
+                new String[] { QMContract.TemplateEntry.KEY_NAME },
+                new int[] { R.id.textViewTemplateName }, 0);
+
+        listViewTemplates = (ListView) findViewById(R.id.listViewTemplates);
+        listViewTemplates.setAdapter(adapter);
 
         listViewTemplates.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // Gets template name that is chosen by user from listView
-                String tempName = adapterView.getItemAtPosition(i).toString();
-                Log.d(TAG, "TemplateActivity: onItemClick: You've clicked on: " + tempName);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                // Gets repeat value for chosen template name
-                Cursor tempData = dbHelper.getTemplateRepeatValue(tempName);
-                String repeats = null;
-                while(tempData.moveToNext()) {
-                    repeats = tempData.getString(0);
-                }
-                // If not null, template name and repeat value are passed to CreateTaskActivity
-                if (repeats != null) {
-                    Log.d(TAG, "TemplateActivity: onItemClick: the repeat value is: " + repeats);
-                    Intent intent = new Intent(TemplateActivity.this, CreateTaskActivity.class);
-                    intent.putExtra("templateRepeats", repeats);
-                    intent.putExtra("templateName", tempName);
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(TemplateActivity.this, "No repeat value associated with that template.", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(TemplateActivity.this, CreateTaskActivity.class);
+
+                Uri currentVehicleUri = ContentUris.withAppendedId(QMContract.TemplateEntry.CONTENT_URI, id);
+
+
+                // Set the URI on the data field of the intent
+                intent.setData(currentVehicleUri);
+                intent.putExtra("ClassName", "TemplateActivity");
+                startActivity(intent);
 
             }
         });
+
+        getLoaderManager().initLoader(VEHICLE_LOADER, null, this);
+
     }
 
-    private void populateListView() {
-        Log.d(TAG, "populateListView: Displaying Templates to ListView");
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = {
+                QMContract.TemplateEntry._ID3,
+                QMContract.TemplateEntry.KEY_NAME,
+                QMContract.TemplateEntry.KEY_REPEATS,
+                QMContract.TemplateEntry.KEY_TEMP_CAT
 
 
+        };
 
-        // Pulls templates from database for chosen category
-        Cursor data = dbHelper.getTemplates(catId);
-        ArrayList<String> listData = new ArrayList<>();
-        while(data.moveToNext()) {
-            listData.add(data.getString(1));
-        }
-        // Displays templates to listView
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
-        listViewTemplates.setAdapter(adapter);
+        String selection = "(" + QMContract.TemplateEntry.KEY_TEMP_CAT + " = '" + catId + "')";
+
+        return new CursorLoader(this,   // Parent activity context
+                QMContract.TemplateEntry.CONTENT_URI,   // Provider content URI to query
+                projection,             // Columns to include in the resulting Cursor
+                selection,                   // No selection clause
+                null,                   // No selection arguments
+                null);                  // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        adapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }
