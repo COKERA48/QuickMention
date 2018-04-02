@@ -14,12 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class CalendarViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -33,7 +31,7 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
     private static final String TAG = "CalendarViewActivity";
     private String selectedDate;
     private SimpleDateFormat dateFormat;
-    private DecimalFormat monthFormatter;
+    private DecimalFormat digitFormatter;
 
 
     @Override
@@ -59,7 +57,7 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
         listview = (ListView) findViewById(R.id.calendarListView);
         dbHelper = new DatabaseHelper(this);
         dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        monthFormatter = new DecimalFormat("00");
+        digitFormatter = new DecimalFormat("00");
         selectedDate = dateFormat.format(new Date(calendarView.getDate())); //get current date in mm/dd/yyyy
         populateListView();
 
@@ -92,7 +90,8 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
         public void onSelectedDayChange(CalendarView view, int year, int month, int day)
         {
             //formatter makes sure month has leading zero so strings can match
-            selectedDate = monthFormatter.format(month + 1) + "/" + day + "/" + year;
+            selectedDate = digitFormatter.format(month + 1) + "/" + digitFormatter.format(day) + "/" + year;
+            Log.d(TAG, selectedDate);
             populateListView();
         }
     }
