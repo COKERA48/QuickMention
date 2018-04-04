@@ -29,8 +29,10 @@ import android.widget.Toast;
 
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class CreateTaskActivity extends AppCompatActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -39,11 +41,12 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private DatePickerDialog.OnDateSetListener StartDateSetListener, EndDateSetListener;
     private TimePickerDialog.OnTimeSetListener StartTimeSetListener, EndTimeSetListener;
     Calendar calStart, calEnd;
-    private Button buttonSaveTask, buttonDeleteTask;
+    private Button buttonSaveTask;
     private static final String TAG = "TaskActivity";
     Spinner spinner;
     DateFormat dateFormat, timeFormat;
     String sourceClass = "";
+    int timestamp = 0;
 
 
     private Uri mCurrentReminderUri;
@@ -65,15 +68,15 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
 
-        editTextTaskName = (EditText) findViewById(R.id.editTextTaskName);
-        tvStartDate = (TextView) findViewById(R.id.tvStartDate);
-        tvStartTime = (TextView) findViewById(R.id.tvStartTime);
-        tvEndDate = (TextView) findViewById(R.id.tvEndDate);
-        tvEndTime = (TextView) findViewById(R.id.tvEndTime);
-        editTextNotes = (EditText) findViewById(R.id.editTextNotes);
-        buttonSaveTask = (Button) findViewById(R.id.buttonSaveTask);
-        buttonDeleteTask = (Button) findViewById(R.id.buttonDeleteTask);
-        spinner = (Spinner) findViewById(R.id.spinner);
+        editTextTaskName = findViewById(R.id.editTextTaskName);
+        tvStartDate = findViewById(R.id.tvStartDate);
+        tvStartTime = findViewById(R.id.tvStartTime);
+        tvEndDate = findViewById(R.id.tvEndDate);
+        tvEndTime = findViewById(R.id.tvEndTime);
+        editTextNotes = findViewById(R.id.editTextNotes);
+        buttonSaveTask = findViewById(R.id.buttonSaveTask);
+        Button buttonDeleteTask = findViewById(R.id.buttonDeleteTask);
+        spinner = findViewById(R.id.spinner);
         Intent intent = getIntent();
         mCurrentReminderUri = intent.getData();
         Bundle bundle = getIntent().getExtras();
@@ -239,6 +242,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         String endTime = timeFormat.format(calEnd.getTime());
         String repeats = String.valueOf(spinner.getSelectedItem());
         String notes = editTextNotes.getText().toString();
+        if (timestamp == 0) {
+            timestamp = (int)System.currentTimeMillis();
+        }
 
         ContentValues values = new ContentValues();
 
@@ -249,6 +255,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         values.put(QMContract.TaskEntry.KEY_END_TIME, endTime);
         values.put(QMContract.TaskEntry.KEY_REPEATS, repeats);
         values.put(QMContract.TaskEntry.KEY_NOTES, notes);
+        values.put(QMContract.TaskEntry.KEY_TIMESTAMP, timestamp);
 
         if (sourceClass.equals("TemplateActivity")) {
             // This is a NEW reminder, so insert a new reminder into the provider,
@@ -280,7 +287,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(this, "Task Updated!",
                         Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
+                deleteAlarm();
+                setAlarm();
             }
         }
 
@@ -289,64 +297,59 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
     private void setAlarm() {
         long interval = 0;
+        switch (spinner.getSelectedItem().toString()) {
+            case "Every Day":
+                interval = 86400000;
+                break;
+            case "Every Other Day":
+                interval = 172800000;
+                break;
+            case "Every Week":
+                interval = 604800000;
+                break;
+            case "Every 2 Weeks":
+                interval = 1209600000;
+                break;
+            case "Every Month":
+                interval = 2629746000L;
+                break;
+            case "Every Year":
+                interval = 31556952000L;
+                break;
+        }
+
+        long initialTime = calStart.getTimeInMillis();
+
         Intent intent = new Intent(getApplicationContext(), Alarm.class);
         intent.putExtra("taskName", editTextTaskName.getText().toString());
-        final int alarmID = (int) System.currentTimeMillis();
-        intent.putExtra("alarmID", alarmID);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra("alarmID", timestamp);
+        intent.putExtra("initialTime", initialTime);
+        intent.putExtra("interval", interval);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), timestamp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-
-
         if (alarmManager != null) {
-            if (spinner.getSelectedItem().toString().equals("Never")) {
-                if (Build.VERSION.SDK_INT >= 19) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calStart.getTimeInMillis(), pendingIntent);
-                }
-                else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calStart.getTimeInMillis(), pendingIntent);
-                }
+            if (Build.VERSION.SDK_INT >= 19) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, initialTime, pendingIntent);
+
             }
             else {
-
-                switch (spinner.getSelectedItem().toString()) {
-                    case "Every Day":
-                        interval = 86400000;
-                        break;
-                    case "Every Other Day":
-                        interval = 172800000;
-                        break;
-                    case "Every Week":
-                        interval = 604800000;
-                        break;
-                    case "Every 2 Weeks":
-                        interval = 1209600000;
-                        break;
-                    case "Every Month":
-                        interval = 2629746000L;
-                        break;
-                    case "Every Year":
-                        interval = 31556952000L;
-                        break;
-                }
-
-
-
-                if (Build.VERSION.SDK_INT >= 19) {
-                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calStart.getTimeInMillis(), interval, pendingIntent);
-                }
-                else {
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calStart.getTimeInMillis(), interval, pendingIntent);
-                }
-
+                alarmManager.set(AlarmManager.RTC_WAKEUP, initialTime, pendingIntent);
             }
-
-
-
 
             Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "setAlarm: time" + calStart.getTime().toString() + " " + interval);
 
+        }
+    }
+
+    public void deleteAlarm() {
+        Intent intent = new Intent(getApplicationContext(), Alarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), timestamp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
         }
     }
 
@@ -414,6 +417,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 // Otherwise, the delete was successful and we can display a toast.
                 Toast.makeText(this, "Task Deleted!",
                         Toast.LENGTH_SHORT).show();
+                deleteAlarm();
             }
         }
 
@@ -435,6 +439,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         QMContract.TaskEntry.KEY_END_TIME,
                         QMContract.TaskEntry.KEY_REPEATS,
                         QMContract.TaskEntry.KEY_NOTES,
+                        QMContract.TaskEntry.KEY_TIMESTAMP
                 };
 
                 // This loader will execute the ContentProvider's query method on a background thread
@@ -483,6 +488,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     int endTimeColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_END_TIME);
                     int repeatsColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_REPEATS);
                     int notesColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_NOTES);
+                    int timestampColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_TIMESTAMP);
 
                     // Extract out the value from the Cursor for the given column index
                     String name = cursor.getString(nameColumnIndex);
@@ -492,6 +498,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     String endTime = cursor.getString(endTimeColumnIndex);
                     String repeats = cursor.getString(repeatsColumnIndex);
                     String notes = cursor.getString(notesColumnIndex);
+                    timestamp = cursor.getInt(timestampColumnIndex);
 
                     // Update the views on the screen with the values from the database
                     editTextTaskName.setText(name);
@@ -501,6 +508,20 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     tvEndTime.setText(endTime);
                     setRepeatsValue(repeats);
                     editTextNotes.setText(notes);
+
+                    // Set calendar objects with date and time values from database
+                    try {
+                        String startDateTime = startDate + " " + startTime;
+                        String endDateTime = endDate + " " + endTime;
+                        DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+                        Date start = df.parse(startDateTime);
+                        calStart.setTimeInMillis(start.getTime());
+                        Date end = df.parse(endDateTime);
+                        calEnd.setTimeInMillis(end.getTime());
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case 1:

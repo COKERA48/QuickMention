@@ -40,6 +40,7 @@ class QMContract {
         static final String KEY_END_TIME = "end_time";
         static final String KEY_REPEATS = "repeats";
         static final String KEY_NOTES = "notes";
+        static final String KEY_TIMESTAMP = "timestamp";
 
     }
 

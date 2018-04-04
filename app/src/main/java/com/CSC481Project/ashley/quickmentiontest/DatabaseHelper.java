@@ -14,23 +14,13 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 15;
+    private static final int DB_VERSION = 16;
 
     /* table names */
     private static final String TABLE_TASK = "tasks";
-    private static final String TABLE_CATEGORY = "categories";
-    private static final String TABLE_TEMPLATE = "templates";
 
     /* column names */
-    private static final String ID = "ID";
-    private static final String NAME = "name";
     private static final String START_DATE = "startDate";
-    private static final String START_TIME = "startTime";
-    private static final String END_DATE = "endDate";
-    private static final String END_TIME = "endTime";
-    private static final String REPEATS = "repeats";
-    private static final String NOTES = "notes";
-    private static final String TEMPLATE_CAT = "templateCategory";
 
 
     DatabaseHelper(Context context) {
@@ -49,7 +39,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 QMContract.TaskEntry.KEY_END_DATE + " TEXT, " +
                 QMContract.TaskEntry.KEY_END_TIME + " TEXT, " +
                 QMContract.TaskEntry.KEY_REPEATS + " TEXT, " +
-                QMContract.TaskEntry.KEY_NOTES + " TEXT)";
+                QMContract.TaskEntry.KEY_NOTES + " TEXT, " +
+                QMContract.TaskEntry.KEY_TIMESTAMP + " INTEGER)";
         db.execSQL(createTableTask);
 
         String createTableCategory = "CREATE TABLE " + QMContract.CategoryEntry.TABLE_NAME + " (" +

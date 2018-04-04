@@ -82,7 +82,8 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
                 QMContract.TaskEntry.KEY_END_DATE,
                 QMContract.TaskEntry.KEY_END_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
-                QMContract.TaskEntry.KEY_NOTES
+                QMContract.TaskEntry.KEY_NOTES,
+                QMContract.TaskEntry.KEY_TIMESTAMP
 
         };
 
