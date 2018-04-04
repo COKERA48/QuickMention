@@ -59,7 +59,8 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
         dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         digitFormatter = new DecimalFormat("00");
         selectedDate = dateFormat.format(new Date(calendarView.getDate())); //get current date in mm/dd/yyyy
-        populateListView();
+        //commenting out populateListView because it uses old dbhelper and not QMContent
+        //populateListView();
 
     }
 
@@ -92,7 +93,8 @@ public class CalendarViewActivity extends AppCompatActivity implements Navigatio
             //formatter makes sure month has leading zero so strings can match
             selectedDate = digitFormatter.format(month + 1) + "/" + digitFormatter.format(day) + "/" + year;
             Log.d(TAG, selectedDate);
-            populateListView();
+            //commenting out populateListView because it uses dbhelper and not QMContent
+            //populateListView();
         }
     }
 
