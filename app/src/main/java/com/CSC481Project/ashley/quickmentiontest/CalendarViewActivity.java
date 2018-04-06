@@ -134,7 +134,8 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
             Log.d(TAG, selectedDate);
             //commenting out populateListView because it uses dbhelper and not QMContent
             //populateListView();
-
+            getLoaderManager().restartLoader(VEHICLE_LOADER, null, CalendarViewActivity.this);
+            
         }
     }
 
