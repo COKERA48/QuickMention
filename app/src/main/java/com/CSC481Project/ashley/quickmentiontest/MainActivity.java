@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,16 +37,16 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        NavigationView navigation = (NavigationView) findViewById(R.id.navigationView);
+        NavigationView navigation = findViewById(R.id.navigationView);
         navigation.setNavigationItemSelectedListener(this);
 
-        ListView listViewUpcomingTasks = (ListView) findViewById(R.id.listViewUpcomingTasks);
+        ListView listViewUpcomingTasks = findViewById(R.id.listViewUpcomingTasks);
 
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_task,
@@ -87,7 +88,9 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 QMContract.TaskEntry.KEY_END_DATE,
                 QMContract.TaskEntry.KEY_END_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
-                QMContract.TaskEntry.KEY_NOTES
+                QMContract.TaskEntry.KEY_NOTES,
+                QMContract.TaskEntry.KEY_ALARM_ID,
+                QMContract.TaskEntry.KEY_TIMESTAMP
 
         };
 
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 projection,             // Columns to include in the resulting Cursor
                 selection,                   // No selection clause
                 null,                   // No selection arguments
-                null);                  // Default sort order
+                QMContract.TaskEntry.KEY_TIMESTAMP);                  // Default sort order
 
     }
 
@@ -121,11 +124,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+        return toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

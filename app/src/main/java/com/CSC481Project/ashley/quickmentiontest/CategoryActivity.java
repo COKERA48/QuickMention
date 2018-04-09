@@ -15,10 +15,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 
+
 public class CategoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "CategoryActivity";
-    private ListView listViewCategories;
     SimpleCursorAdapter adapter;
 
     private static final int VEHICLE_LOADER = 0;
@@ -32,7 +32,7 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_category);
         setTitle("Choose Category");
 
-        listViewCategories = (ListView) findViewById(R.id.listViewCategories);
+        ListView listViewCategories = findViewById(R.id.listViewCategories);
 
 
         adapter = new SimpleCursorAdapter(this,

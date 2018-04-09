@@ -17,10 +17,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+
 public class TemplateActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = "TemplateActivity";
-    private ListView listViewTemplates;
     private int catId;
     private String catName;
     private Integer catIcon;
@@ -38,18 +38,21 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
         Uri mCurrentReminderUri = intent.getData();
 
         ContentResolver mResolver = this.getContentResolver();
-        Cursor cursor = mResolver.query(mCurrentReminderUri, new String[] {
-                QMContract.CategoryEntry._ID, QMContract.CategoryEntry.KEY_NAME, QMContract.CategoryEntry.KEY_ICON }, null, null, null);
-        if (cursor.moveToFirst()) {
+        Cursor cursor = null;
+        if (mCurrentReminderUri != null) {
+            cursor = mResolver.query(mCurrentReminderUri, new String[] {
+                    QMContract.CategoryEntry._ID, QMContract.CategoryEntry.KEY_NAME, QMContract.CategoryEntry.KEY_ICON }, null, null, null);
+        }
+        if (cursor != null && cursor.moveToFirst()) {
             catId = cursor.getInt(cursor
                     .getColumnIndex(QMContract.CategoryEntry._ID));
             catName = cursor.getString(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_NAME));
             catIcon = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_ICON));
-
+            cursor.close();
         }
-        image = (ImageView) findViewById(R.id.image);
+        image = findViewById(R.id.image);
         image.setImageResource(catIcon);
-        TextView textViewCatName = (TextView) findViewById(R.id.textViewCatName);
+        TextView textViewCatName = findViewById(R.id.textViewCatName);
         textViewCatName.setText(catName);
 
         adapter = new SimpleCursorAdapter(this,
@@ -58,7 +61,7 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
                 new String[] { QMContract.TemplateEntry.KEY_NAME },
                 new int[] { R.id.textViewTemplateName }, 0);
 
-        listViewTemplates = (ListView) findViewById(R.id.listViewTemplates);
+        ListView listViewTemplates = findViewById(R.id.listViewTemplates);
         listViewTemplates.setAdapter(adapter);
 
         listViewTemplates.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -46,7 +46,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     Spinner spinner;
     DateFormat dateFormat, timeFormat;
     String sourceClass = "";
-    int timestamp = 0;
+    int alarmId = 0;
+    Uri newUri;
+    long timestamp;
 
 
     private Uri mCurrentReminderUri;
@@ -84,19 +86,21 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             sourceClass = bundle.getString("ClassName");
         }
 
-        if (sourceClass.equals("TemplateActivity")) {
-            Log.d(TAG, "test");
-            setTitle("New Task");
+        if (sourceClass != null) {
+            if (sourceClass.equals("TemplateActivity")) {
+                Log.d(TAG, "test");
+                setTitle("New Task");
 
-            getLoaderManager().initLoader(1, null, this);
+                getLoaderManager().initLoader(1, null, this);
 
-            buttonDeleteTask.setVisibility(View.GONE);
-        } else {
+                buttonDeleteTask.setVisibility(View.GONE);
+            } else {
 
-            setTitle("Edit Task");
-            buttonSaveTask.setText("Update Task");
+                setTitle("Edit Task");
+                buttonSaveTask.setText("Update Task");
 
-            getLoaderManager().initLoader(EXISTING_VEHICLE_LOADER, null, this);
+                getLoaderManager().initLoader(EXISTING_VEHICLE_LOADER, null, this);
+            }
         }
 
         dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
@@ -242,8 +246,24 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         String endTime = timeFormat.format(calEnd.getTime());
         String repeats = String.valueOf(spinner.getSelectedItem());
         String notes = editTextNotes.getText().toString();
-        if (timestamp == 0) {
-            timestamp = (int)System.currentTimeMillis();
+
+        // Create string that contains start date and time.
+        // Convert to milliseconds for timestamp.
+        String startDateTime = startDate + " " + startTime;
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+        Calendar c = Calendar.getInstance();
+        try {
+            Date start = df.parse(startDateTime);
+            c.setTimeInMillis(start.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long timestamp = c.getTimeInMillis();
+
+        // if the task does not already have an alarmId, create a unique one.
+        if (alarmId == 0) {
+            alarmId = (int)System.currentTimeMillis();
         }
 
         ContentValues values = new ContentValues();
@@ -255,12 +275,14 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         values.put(QMContract.TaskEntry.KEY_END_TIME, endTime);
         values.put(QMContract.TaskEntry.KEY_REPEATS, repeats);
         values.put(QMContract.TaskEntry.KEY_NOTES, notes);
+        values.put(QMContract.TaskEntry.KEY_ALARM_ID, alarmId);
         values.put(QMContract.TaskEntry.KEY_TIMESTAMP, timestamp);
 
         if (sourceClass.equals("TemplateActivity")) {
             // This is a NEW reminder, so insert a new reminder into the provider,
             // returning the content URI for the new reminder.
-            Uri newUri = getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
+            newUri = getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
+
 
             // Show a toast message depending on whether or not the insertion was successful.
             if (newUri == null) {
@@ -287,7 +309,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(this, "Task Updated!",
                         Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                deleteAlarm();
                 setAlarm();
             }
         }
@@ -321,12 +342,16 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         long initialTime = calStart.getTimeInMillis();
 
         Intent intent = new Intent(getApplicationContext(), Alarm.class);
-        intent.putExtra("taskName", editTextTaskName.getText().toString());
-        intent.putExtra("alarmID", timestamp);
+
+        if (newUri != null) {
+            intent.setData(newUri);
+        }
+        else intent.setData(mCurrentReminderUri);
+
         intent.putExtra("initialTime", initialTime);
         intent.putExtra("interval", interval);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), timestamp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         if (alarmManager != null) {
@@ -346,7 +371,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
     public void deleteAlarm() {
         Intent intent = new Intent(getApplicationContext(), Alarm.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), timestamp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
@@ -364,7 +389,6 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 if (dpdStart.getWindow() != null)
                     dpdStart.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dpdStart.show();
-
                 break;
             case R.id.tvStartTime:
                 TimePickerDialog tpdStart = new TimePickerDialog(CreateTaskActivity.this,
@@ -427,7 +451,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        CursorLoader loader = null;
+        CursorLoader loader;
         switch (i){
             case EXISTING_VEHICLE_LOADER:
                 String[] projection = {
@@ -439,6 +463,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         QMContract.TaskEntry.KEY_END_TIME,
                         QMContract.TaskEntry.KEY_REPEATS,
                         QMContract.TaskEntry.KEY_NOTES,
+                        QMContract.TaskEntry.KEY_ALARM_ID,
                         QMContract.TaskEntry.KEY_TIMESTAMP
                 };
 
@@ -488,6 +513,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     int endTimeColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_END_TIME);
                     int repeatsColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_REPEATS);
                     int notesColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_NOTES);
+                    int alarmIdColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_ALARM_ID);
                     int timestampColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_TIMESTAMP);
 
                     // Extract out the value from the Cursor for the given column index
@@ -498,7 +524,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     String endTime = cursor.getString(endTimeColumnIndex);
                     String repeats = cursor.getString(repeatsColumnIndex);
                     String notes = cursor.getString(notesColumnIndex);
-                    timestamp = cursor.getInt(timestampColumnIndex);
+                    alarmId = cursor.getInt(alarmIdColumnIndex);
+                    timestamp = cursor.getLong(timestampColumnIndex);
+
 
                     // Update the views on the screen with the values from the database
                     editTextTaskName.setText(name);
@@ -511,11 +539,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                     // Set calendar objects with date and time values from database
                     try {
-                        String startDateTime = startDate + " " + startTime;
                         String endDateTime = endDate + " " + endTime;
                         DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
-                        Date start = df.parse(startDateTime);
-                        calStart.setTimeInMillis(start.getTime());
+                        calStart.setTimeInMillis(timestamp);
                         Date end = df.parse(endDateTime);
                         calEnd.setTimeInMillis(end.getTime());
 

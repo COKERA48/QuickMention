@@ -17,31 +17,21 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import java.text.DateFormat;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class CalendarViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationView.OnNavigationItemSelectedListener {
 
-    private CalendarView calendarView;
-    private NavigationView menu;
-    private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle menuToggle;
-    private ListView listview;
-    private DatabaseHelper dbHelper;
     private static final String TAG = "CalendarViewActivity";
     private String selectedDate;
-    private SimpleDateFormat dateFormat;
     private DecimalFormat digitFormatter;
     SimpleCursorAdapter adapter;
 
@@ -54,26 +44,22 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
         setTitle("Calendar");
 
         //setup side menu and toggle button
-        menu = (NavigationView) findViewById(R.id.navigationView);
+        NavigationView menu = findViewById(R.id.navigationView);
         menu.setNavigationItemSelectedListener(this); //have app call onNavigationItemSelected() when menu option is used
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         menuToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(menuToggle);
         menuToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //setup widgets for this activity
-        calendarView = (CalendarView) findViewById(R.id.calendarView);
+        CalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new DateChangeListener());
-        //calendarView is already set to current date on creation
-        //calendarView.setDate(new Date().getTime()); //set view to current date
-        listview = (ListView) findViewById(R.id.calendarListView);
-        dbHelper = new DatabaseHelper(this);
-        dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        ListView listview = findViewById(R.id.calendarListView);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         digitFormatter = new DecimalFormat("00");
         selectedDate = dateFormat.format(new Date(calendarView.getDate())); //get current date in mm/dd/yyyy
-        //commenting out populateListView because it uses old dbhelper and not QMContent
-        //populateListView();
+
 
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_task,
@@ -103,20 +89,7 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
         getLoaderManager().initLoader(VEHICLE_LOADER, null, this);
     }
 
-    private void populateListView() {
-        Log.d(TAG, "populateListView: Displaying data to ListView");
 
-        Cursor data = dbHelper.getTasks(selectedDate);
-
-        ArrayList<String> listData = new ArrayList<>();
-        while(data.moveToNext()) {
-            //only add the task to the listView if its start date matches the selected date on the calendarView
-            listData.add(data.getString(1) + "\t\t\t" + data.getString(2) + "\t\t\t" + data.getString(3) + "\t\t\t" + data.getString(5));
-        }
-
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
-        listview.setAdapter(adapter);
-    }
 
     //listener is called whenever a new date is picked
     private class DateChangeListener implements CalendarView.OnDateChangeListener
@@ -132,8 +105,7 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
             //formatter makes sure month has leading zero so strings can match
             selectedDate = digitFormatter.format(month + 1) + "/" + digitFormatter.format(day) + "/" + year;
             Log.d(TAG, selectedDate);
-            //commenting out populateListView because it uses dbhelper and not QMContent
-            //populateListView();
+
             getLoaderManager().restartLoader(VEHICLE_LOADER, null, CalendarViewActivity.this);
             
         }
@@ -149,13 +121,12 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
                 QMContract.TaskEntry.KEY_END_DATE,
                 QMContract.TaskEntry.KEY_END_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
-                QMContract.TaskEntry.KEY_NOTES
+                QMContract.TaskEntry.KEY_NOTES,
+                QMContract.TaskEntry.KEY_ALARM_ID,
+                QMContract.TaskEntry.KEY_TIMESTAMP
 
         };
 
-        Calendar c = Calendar.getInstance();
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-        String selectDate = dateFormat.format(c.getTime());
         String selection = "(" + QMContract.TaskEntry.KEY_START_DATE + " = '" + selectedDate + "')";
 
 
@@ -164,7 +135,7 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
                 projection,             // Columns to include in the resulting Cursor
                 selection,                   // No selection clause
                 null,                   // No selection arguments
-                null);                  // Default sort order
+                QMContract.TaskEntry.KEY_TIMESTAMP);                  // Default sort order
 
     }
 

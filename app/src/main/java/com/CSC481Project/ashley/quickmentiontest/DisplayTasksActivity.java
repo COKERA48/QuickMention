@@ -20,13 +20,12 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 
+
 public class DisplayTasksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "DisplayTasksActivity";
     SimpleCursorAdapter adapter;
     private static final int VEHICLE_LOADER = 0;
-    private NavigationView menu;
-    private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle menuToggle;
 
     @Override
@@ -35,15 +34,15 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
         setContentView(R.layout.activity_display_tasks);
 
         //setup side menu and toggle button
-        menu = (NavigationView) findViewById(R.id.navigationView);
+        NavigationView menu = findViewById(R.id.navigationView);
         menu.setNavigationItemSelectedListener(this); //have app call onNavigationItemSelected() when menu option is used
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         menuToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(menuToggle);
         menuToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.listView);
 
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_task,
@@ -83,6 +82,7 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
                 QMContract.TaskEntry.KEY_END_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
                 QMContract.TaskEntry.KEY_NOTES,
+                QMContract.TaskEntry.KEY_ALARM_ID,
                 QMContract.TaskEntry.KEY_TIMESTAMP
 
         };
@@ -92,7 +92,7 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
                 projection,             // Columns to include in the resulting Cursor
                 null,                   // No selection clause
                 null,                   // No selection arguments
-                null);                  // Default sort order
+                QMContract.TaskEntry.KEY_TIMESTAMP);                  // Default sort order
     }
 
     @Override

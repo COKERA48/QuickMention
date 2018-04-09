@@ -1,11 +1,11 @@
 package com.CSC481Project.ashley.quickmentiontest;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import com.CSC481Project.ashley.quickmentiontest.R;
+import com.CSC481Project.ashley.quickmentiontest.QMContract;
 
 /**
  * Created by Ashley on 2/21/2018.
@@ -14,13 +14,8 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 17;
+    private static final int DB_VERSION = 19;
 
-    /* table names */
-    private static final String TABLE_TASK = "tasks";
-
-    /* column names */
-    private static final String START_DATE = "startDate";
 
 
     DatabaseHelper(Context context) {
@@ -40,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 QMContract.TaskEntry.KEY_END_TIME + " TEXT, " +
                 QMContract.TaskEntry.KEY_REPEATS + " TEXT, " +
                 QMContract.TaskEntry.KEY_NOTES + " TEXT, " +
+                QMContract.TaskEntry.KEY_ALARM_ID + " INTEGER, " +
                 QMContract.TaskEntry.KEY_TIMESTAMP + " INTEGER)";
         db.execSQL(createTableTask);
 
@@ -69,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
                 QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Do Laundry', 'Every Week', 1 )");
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
-                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Cut Grass', 'Every 2 Weeks', 1 )");
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Mow Lawn', 'Every 2 Weeks', 1 )");
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
                 QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ") VALUES ('Wash Car', 'Every Week', 2 )");
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
@@ -88,16 +84,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    /* Return tasks with a start_date that matches dateString
-     * dateString must be formatted as MM/dd/yyyy
-      * including leading zero on the month */
-    Cursor getTasks(String dateString){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_TASK + " WHERE " + START_DATE + " = '" +
-                dateString + "'";
-        return db.rawQuery(query, null);
-
-
-    }
 
 }
