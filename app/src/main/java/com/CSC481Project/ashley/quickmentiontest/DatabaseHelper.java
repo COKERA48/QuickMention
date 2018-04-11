@@ -14,7 +14,7 @@ import com.CSC481Project.ashley.quickmentiontest.QMContract;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 19;
+    private static final int DB_VERSION = 20;
 
 
 
@@ -58,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Home', " + R.drawable.ic_home_black_24dp + ")");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Auto', " + R.drawable.ic_directions_car_black_24dp + ")");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Health', " + R.drawable.ic_local_hospital_black_24dp + ")");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('My Templates', " + R.drawable.ic_person + ")");
 
 
 

@@ -162,7 +162,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 tvStartDate.setText(dateFormat.format(calStart.getTime()));
                 calEnd.set(y, m, d);
                 tvEndDate.setText(dateFormat.format(calEnd.getTime()));
-                checkTimes();
+
 
             }
         };
@@ -177,7 +177,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 calEnd.set(Calendar.MINUTE, m);
                 tvStartTime.setText(timeFormat.format(calStart.getTime()));
                 tvEndTime.setText(timeFormat.format(calEnd.getTime()));
-                checkTimes();
+
             }
         };
         // Listener for end date DatePicker. Gets date picked and displays to end date textview.
@@ -186,7 +186,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
             public void onDateSet(DatePicker datePicker, int y, int m, int d) {
                 calEnd.set(y, m, d);
                 tvEndDate.setText(dateFormat.format(calEnd.getTime()));
-                checkTimes();
+
             }
         };
         // Listener for end time TimePicker. Gets time picked and displays to end time textView.
@@ -196,7 +196,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 calEnd.set(Calendar.HOUR_OF_DAY, h);
                 calEnd.set(Calendar.MINUTE, m);
                 tvEndTime.setText(timeFormat.format(calEnd.getTime()));
-                checkTimes();
+
             }
         };
 
@@ -227,89 +227,102 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    public void checkTimes() {
+    public boolean checkTimes() {
 
+        Calendar now = Calendar.getInstance();
+        // If start date/time is after end date/time OR start date/time is before now,
+        // user may not save task.
         if (calStart.compareTo(calEnd) > 0) {
-            Log.d(TAG, "TaskActivity: checkTimes: Start date/time is after End date/time");
-            buttonSaveTask.setEnabled(false);
+            Toast.makeText(this, "Start time must be before end time.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
-        else buttonSaveTask.setEnabled(true);
+
+        if (calStart.compareTo(now) < 0 ) {
+            Toast.makeText(this, "Start time must be set to a future time.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else return true;
     }
 
 
     public void saveTask() {
-
-        String name = editTextTaskName.getText().toString();
-        String startDate = dateFormat.format(calStart.getTime());
-        String startTime = timeFormat.format(calStart.getTime());
-        String endDate = dateFormat.format(calEnd.getTime());
-        String endTime = timeFormat.format(calEnd.getTime());
-        String repeats = String.valueOf(spinner.getSelectedItem());
-        String notes = editTextNotes.getText().toString();
-
-        // Create string that contains start date and time.
-        // Convert to milliseconds for timestamp.
-        String startDateTime = startDate + " " + startTime;
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
-        Calendar c = Calendar.getInstance();
-        try {
-            Date start = df.parse(startDateTime);
-            c.setTimeInMillis(start.getTime());
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long timestamp = c.getTimeInMillis();
-
-        // if the task does not already have an alarmId, create a unique one.
-        if (alarmId == 0) {
-            alarmId = (int)System.currentTimeMillis();
-        }
-
-        ContentValues values = new ContentValues();
-
-        values.put(QMContract.TaskEntry.KEY_NAME, name);
-        values.put(QMContract.TaskEntry.KEY_START_DATE, startDate);
-        values.put(QMContract.TaskEntry.KEY_START_TIME, startTime);
-        values.put(QMContract.TaskEntry.KEY_END_DATE, endDate);
-        values.put(QMContract.TaskEntry.KEY_END_TIME, endTime);
-        values.put(QMContract.TaskEntry.KEY_REPEATS, repeats);
-        values.put(QMContract.TaskEntry.KEY_NOTES, notes);
-        values.put(QMContract.TaskEntry.KEY_ALARM_ID, alarmId);
-        values.put(QMContract.TaskEntry.KEY_TIMESTAMP, timestamp);
-
-        if (sourceClass.equals("TemplateActivity")) {
-            // This is a NEW reminder, so insert a new reminder into the provider,
-            // returning the content URI for the new reminder.
-            newUri = getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
+        if (checkTimes()) {
 
 
-            // Show a toast message depending on whether or not the insertion was successful.
-            if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, "Something went wrong.",
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, "Task Saved!",
-                        Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                setAlarm();
+            String name = editTextTaskName.getText().toString();
+            String startDate = dateFormat.format(calStart.getTime());
+            String startTime = timeFormat.format(calStart.getTime());
+            String endDate = dateFormat.format(calEnd.getTime());
+            String endTime = timeFormat.format(calEnd.getTime());
+            String repeats = String.valueOf(spinner.getSelectedItem());
+            String notes = editTextNotes.getText().toString();
+
+            // Create string that contains start date and time.
+            // Convert to milliseconds for timestamp.
+            String startDateTime = startDate + " " + startTime;
+            DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+            Calendar c = Calendar.getInstance();
+            try {
+                Date start = df.parse(startDateTime);
+                c.setTimeInMillis(start.getTime());
+
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-        } else {
-            int rowsAffected = getContentResolver().update(mCurrentReminderUri, values, null, null);
+            long timestamp = c.getTimeInMillis();
 
-            // Show a toast message depending on whether or not the update was successful.
-            if (rowsAffected == 0) {
-                // If no rows were affected, then there was an error with the update.
-                Toast.makeText(this, "Something went wrong.",
-                        Toast.LENGTH_SHORT).show();
+            // if the task does not already have an alarmId, create a unique one.
+            if (alarmId == 0) {
+                alarmId = (int) System.currentTimeMillis();
+            }
+
+            ContentValues values = new ContentValues();
+
+            values.put(QMContract.TaskEntry.KEY_NAME, name);
+            values.put(QMContract.TaskEntry.KEY_START_DATE, startDate);
+            values.put(QMContract.TaskEntry.KEY_START_TIME, startTime);
+            values.put(QMContract.TaskEntry.KEY_END_DATE, endDate);
+            values.put(QMContract.TaskEntry.KEY_END_TIME, endTime);
+            values.put(QMContract.TaskEntry.KEY_REPEATS, repeats);
+            values.put(QMContract.TaskEntry.KEY_NOTES, notes);
+            values.put(QMContract.TaskEntry.KEY_ALARM_ID, alarmId);
+            values.put(QMContract.TaskEntry.KEY_TIMESTAMP, timestamp);
+
+            if (sourceClass.equals("TemplateActivity")) {
+                // This is a NEW reminder, so insert a new reminder into the provider,
+                // returning the content URI for the new reminder.
+                newUri = getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
+
+
+                // Show a toast message depending on whether or not the insertion was successful.
+                if (newUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    Toast.makeText(this, "Something went wrong.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the insertion was successful and we can display a toast.
+                    Toast.makeText(this, "Task Saved!",
+                            Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    setAlarm();
+                }
             } else {
-                // Otherwise, the update was successful and we can display a toast.
-                Toast.makeText(this, "Task Updated!",
-                        Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                setAlarm();
+                int rowsAffected = getContentResolver().update(mCurrentReminderUri, values, null, null);
+
+                // Show a toast message depending on whether or not the update was successful.
+                if (rowsAffected == 0) {
+                    // If no rows were affected, then there was an error with the update.
+                    Toast.makeText(this, "Something went wrong.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the update was successful and we can display a toast.
+                    Toast.makeText(this, "Task Updated!",
+                            Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    setAlarm();
+                }
             }
         }
 

@@ -44,7 +44,23 @@
         android:paddingBottom="40dp"
         android:paddingTop="40dp"
         android:paddingRight="50dp"
-        android:paddingLeft="20dp"/>
+        android:paddingLeft="20dp"
+        />
+
+        <TextView
+            android:id="@+id/textViewNoTasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="No Tasks!"
+            android:layout_gravity="center"
+            android:textSize="24sp"
+            android:paddingBottom="40dp"
+            android:paddingTop="30dp"
+            android:paddingRight="50dp"
+            android:paddingLeft="20dp"
+            android:paddingEnd="50dp"
+            android:paddingStart="20dp" />
 
 </LinearLayout>
 
@@ -59,6 +75,8 @@
         android:layout_margin="15dp"/>
 
 </LinearLayout>
+
+
 
     <android.support.design.widget.NavigationView
         android:layout_height="match_parent"

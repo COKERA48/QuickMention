@@ -20,7 +20,10 @@ import android.widget.AdapterView;
 import android.widget.CalendarView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -56,6 +59,8 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
         CalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new DateChangeListener());
         ListView listview = findViewById(R.id.calendarListView);
+        TextView textViewNoTasks = findViewById(R.id.textViewNoTasks);
+        listview.setEmptyView(textViewNoTasks);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         digitFormatter = new DecimalFormat("00");
         selectedDate = dateFormat.format(new Date(calendarView.getDate())); //get current date in mm/dd/yyyy

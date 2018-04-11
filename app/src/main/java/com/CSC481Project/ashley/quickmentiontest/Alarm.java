@@ -30,15 +30,15 @@ import java.util.Locale;
 
 public class Alarm extends BroadcastReceiver {
     private static final String TAG = "Alarm";
-    private String taskName, startDate, startTime, endDate, endTime;
+    private String taskName, startDate, startTime, endDate, endTime, repeats, notes;
     private long interval, initialTime, timestamp;
     private int alarmId;
     Calendar c;
-    private Uri mCurrentReminderUri;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         c = Calendar.getInstance();
-        mCurrentReminderUri = intent.getData();
+        Uri mCurrentReminderUri = intent.getData();
 
         Bundle bundle = intent.getExtras();
         if (bundle != null ) {
@@ -53,6 +53,8 @@ public class Alarm extends BroadcastReceiver {
                         QMContract.TaskEntry.KEY_START_TIME,
                         QMContract.TaskEntry.KEY_END_DATE,
                         QMContract.TaskEntry.KEY_END_TIME,
+                        QMContract.TaskEntry.KEY_REPEATS,
+                        QMContract.TaskEntry.KEY_NOTES,
                         QMContract.TaskEntry.KEY_ALARM_ID,
                         QMContract.TaskEntry.KEY_TIMESTAMP},
                 null,
@@ -65,6 +67,8 @@ public class Alarm extends BroadcastReceiver {
             startTime = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_START_TIME));
             endDate = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_END_DATE));
             endTime = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_END_TIME));
+            repeats = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_REPEATS));
+            notes = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_NOTES));
             alarmId = cursor.getInt(cursor.getColumnIndex(QMContract.TaskEntry.KEY_ALARM_ID));
             timestamp = cursor.getLong(cursor.getColumnIndex(QMContract.TaskEntry.KEY_TIMESTAMP));
             cursor.close();
@@ -91,25 +95,25 @@ public class Alarm extends BroadcastReceiver {
 
         if (interval != 0) {
             try {
-                rescheduleAlarm(context, intent);
+                rescheduleAlarm(context);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void rescheduleAlarm(Context context, Intent intent) throws ParseException {
+    public void rescheduleAlarm(Context context) throws ParseException {
         //increment time of alarm by interval
         initialTime += interval;
 
-        //reset timestamp for database
+        //save new timestamp for new task
         c.setTimeInMillis(initialTime);
         timestamp = c.getTimeInMillis();
 
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         DateFormat tf = new SimpleDateFormat("hh:mm a", Locale.US);
 
-        //reset start date and time for database
+        //save new start date and time strings for new task
         startDate = df.format(c.getTime());
         startTime = tf.format(c.getTime());
 
@@ -125,20 +129,27 @@ public class Alarm extends BroadcastReceiver {
         endDate = df.format(c2.getTime());
         endTime = tf.format(c2.getTime());
 
-        //setting values to be updated in db
+        //setting values for new task to be created
         ContentValues values = new ContentValues();
         values.put(QMContract.TaskEntry.KEY_NAME, taskName);
         values.put(QMContract.TaskEntry.KEY_START_DATE, startDate);
         values.put(QMContract.TaskEntry.KEY_START_TIME, startTime);
         values.put(QMContract.TaskEntry.KEY_END_DATE, endDate);
         values.put(QMContract.TaskEntry.KEY_END_TIME, endTime);
+        values.put(QMContract.TaskEntry.KEY_REPEATS, repeats);
+        values.put(QMContract.TaskEntry.KEY_NOTES, notes);
+        values.put(QMContract.TaskEntry.KEY_ALARM_ID, alarmId);
         values.put(QMContract.TaskEntry.KEY_TIMESTAMP, timestamp);
 
-        //update values in db
-        context.getContentResolver().update(mCurrentReminderUri, values, null, null);
+        // Create new task with updated values
+        Intent intent = new Intent(context.getApplicationContext(), Alarm.class);
+        Uri newUri = context.getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
+        intent.setData(newUri);
 
-        //send new time for alarm to onRecieve()
+        //send new time for alarm to onReceive()
         intent.putExtra("initialTime", initialTime);
+        //intent.putExtra("interval", interval);
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

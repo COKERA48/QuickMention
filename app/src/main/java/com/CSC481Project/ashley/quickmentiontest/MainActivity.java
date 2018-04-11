@@ -139,6 +139,10 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 return true;
             case R.id.allTasks:
                 startActivity(new Intent(getApplicationContext(), DisplayTasksActivity.class));
+                return true;
+            case R.id.myTemplates:
+                startActivity(new Intent(getApplicationContext(), MyTemplatesActivity.class));
+                return true;
         }
 
         return true;

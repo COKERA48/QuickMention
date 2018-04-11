@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-
+import android.widget.TextView;
 
 
 public class DisplayTasksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +43,8 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ListView listView = findViewById(R.id.listView);
+        TextView textViewNoTasks = findViewById(R.id.textViewNoTasks);
+        listView.setEmptyView(textViewNoTasks);
 
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_task,
