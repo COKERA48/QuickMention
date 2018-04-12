@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 
 import java.text.DateFormat;
@@ -45,8 +46,10 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
         NavigationView navigation = findViewById(R.id.navigationView);
         navigation.setNavigationItemSelectedListener(this);
+        TextView textViewNoTasks = findViewById(R.id.textViewNoTasks);
 
         ListView listViewUpcomingTasks = findViewById(R.id.listViewUpcomingTasks);
+        listViewUpcomingTasks.setEmptyView(textViewNoTasks);
 
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_task,
