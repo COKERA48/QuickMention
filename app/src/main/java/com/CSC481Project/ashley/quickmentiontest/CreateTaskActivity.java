@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -69,6 +70,9 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
+
+        Toolbar toolbar = findViewById(R.id.toolbarTask);
+        setSupportActionBar(toolbar);
 
         editTextTaskName = findViewById(R.id.editTextTaskName);
         tvStartDate = findViewById(R.id.tvStartDate);

@@ -74,6 +74,7 @@ class QMContract {
         static final String KEY_NAME = "template_name";
         static final String KEY_REPEATS = "repeats";
         static final String KEY_TEMP_CAT = "template_category";
+        static final String KEY_CREATED_BY_USER = "created_by_user";
     }
 
 

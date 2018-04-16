@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,11 +49,14 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
 
         //setup side menu and toggle button
         NavigationView menu = findViewById(R.id.navigationView);
+        Toolbar toolbar = findViewById(R.id.toolbarCalendar);
         menu.setNavigationItemSelectedListener(this); //have app call onNavigationItemSelected() when menu option is used
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        menuToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        menuToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(menuToggle);
         menuToggle.syncState();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //setup widgets for this activity

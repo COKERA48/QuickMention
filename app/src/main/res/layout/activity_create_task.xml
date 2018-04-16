@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context="com.CSC481Project.ashley.quickmentiontest.CreateTaskActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarTask"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <GridLayout
         android:id="@+id/gridLayout"
         android:layout_width="wrap_content"
@@ -21,7 +30,7 @@
             android:id="@+id/textViewTaskName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Task Name:"
+            android:text="@string/task_name"
             android:textSize="18sp" />
 
         <EditText
@@ -36,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Start Date:"
+            android:text="@string/start_date"
             android:textSize="18sp" />
 
         <TextView
@@ -53,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Start Time:"
+            android:text="@string/start_time"
             android:textSize="18sp" />
 
         <TextView
@@ -70,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="End Date:"
+            android:text="@string/end_date"
             android:textSize="18sp" />
 
         <TextView
@@ -87,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="End Time:"
+            android:text="@string/end_time"
             android:textSize="18sp" />
 
         <TextView
@@ -104,7 +113,7 @@
             android:id="@+id/textViewRepeats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Repeats:"
+            android:text="@string/repeats"
             android:textSize="18sp" />
 
         <Spinner
@@ -121,7 +130,7 @@
             android:id="@+id/textViewNotes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notes:"
+            android:text="@string/notes"
             android:textSize="18sp" />
 
         <EditText
@@ -142,7 +151,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Save Task"
+        android:text="@string/save_task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -157,7 +166,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Delete Task"
+        android:text="@string/delete_task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -23,6 +23,30 @@
     <!-- for drawer layout -->
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="add_task">Add Task</string>
+    <string name="view_calendar">View Calendar</string>
+    <string name="all_tasks">All Tasks</string>
+
+    <!-- for template toolbar -->
+    <string name="edit">Edit</string>
+    <string name="add">Add</string>
+    <string name="done">Done</string>
+
+    <!-- for CreateTaskActivity -->
+    <string name="task_name">Task Name:</string>
+    <string name="start_date">Start Date:</string>
+    <string name="start_time">Start Time:</string>
+    <string name="end_date">End Date:</string>
+    <string name="end_time">End Time:</string>
+    <string name="repeats">Repeats:</string>
+    <string name="notes">Notes:</string>
+    <string name="save_task">Save Task</string>
+    <string name="delete_task">Delete Task</string>
+
+    <string name="today_s_tasks">Today\'s Tasks:</string>
+    <string name="no_tasks">No Tasks!</string>
+
+    <string name="name">Name:</string>
 
     <!--    Repeat task options     -->
     <string-array name="repeat_options">

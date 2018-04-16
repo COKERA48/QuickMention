@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,9 +40,12 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         setContentView(R.layout.activity_main);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        Toolbar toolbar = findViewById(R.id.toolbarMainActivity);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         NavigationView navigation = findViewById(R.id.navigationView);
@@ -142,9 +146,6 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
                 return true;
             case R.id.allTasks:
                 startActivity(new Intent(getApplicationContext(), DisplayTasksActivity.class));
-                return true;
-            case R.id.myTemplates:
-                startActivity(new Intent(getApplicationContext(), MyTemplatesActivity.class));
                 return true;
         }
 

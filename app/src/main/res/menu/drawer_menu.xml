@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/newTask" android:title="Add Task" android:icon="@drawable/ic_add_task"/>
-    <item android:id="@+id/calendar" android:title="View Calendar" android:icon="@drawable/ic_calendar"/>
-    <item android:id="@+id/allTasks" android:title="All Tasks" android:icon="@drawable/ic_list"/>
-    <item android:id="@+id/myTemplates" android:title="My Templates" android:icon="@drawable/ic_settings"/>
+    <item android:id="@+id/newTask" android:title="@string/add_task" android:icon="@drawable/ic_add_task"/>
+    <item android:id="@+id/calendar" android:title="@string/view_calendar" android:icon="@drawable/ic_calendar"/>
+    <item android:id="@+id/allTasks" android:title="@string/all_tasks" android:icon="@drawable/ic_list"/>
 
 </menu>

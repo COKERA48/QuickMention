@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,6 +32,9 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
         setTitle("Choose Category");
+
+        Toolbar toolbar = findViewById(R.id.toolbarCategory);
+        setSupportActionBar(toolbar);
 
         ListView listViewCategories = findViewById(R.id.listViewCategories);
 
