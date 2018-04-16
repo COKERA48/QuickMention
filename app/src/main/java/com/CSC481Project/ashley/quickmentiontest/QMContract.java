@@ -58,6 +58,7 @@ class QMContract {
         final static String _ID2 = BaseColumns._ID;
         static final String KEY_NAME = "category_name";
         static final String KEY_ICON = "icon";
+        public static final String KEY_USAGE = "usage";
     }
 
     static final class TemplateEntry implements BaseColumns {
@@ -75,6 +76,7 @@ class QMContract {
         static final String KEY_REPEATS = "repeats";
         static final String KEY_TEMP_CAT = "template_category";
         static final String KEY_CREATED_BY_USER = "created_by_user";
+        public static final String KEY_USAGE = "usage";
     }
 
 

@@ -223,6 +223,14 @@ public class QMContentProvider extends ContentProvider {
                 selection = QMContract.TaskEntry._ID1 + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 return updateTask(uri, contentValues, selection, selectionArgs);
+            case CATEGORY:
+                return updateCategory(uri, contentValues, selection, selectionArgs);
+            case CATEGORY_ID:
+                selection = QMContract.CategoryEntry._ID2 + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateCategory(uri, contentValues, selection, selectionArgs);
+            case TEMPLATE:
+                return updateTemplate(uri, contentValues, selection, selectionArgs);
             case TEMPLATE_ID:
                 selection = QMContract.TemplateEntry._ID3 + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
@@ -230,6 +238,22 @@ public class QMContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
+    }
+
+    private int updateCategory(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(QMContract.CategoryEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
     }
 
     private int updateTemplate(Uri uri, ContentValues values, String selection, String[] selectionArgs) {

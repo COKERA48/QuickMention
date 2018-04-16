@@ -249,7 +249,8 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
                 QMContract.TemplateEntry.KEY_NAME,
                 QMContract.TemplateEntry.KEY_REPEATS,
                 QMContract.TemplateEntry.KEY_CREATED_BY_USER,
-                QMContract.TemplateEntry.KEY_TEMP_CAT
+                QMContract.TemplateEntry.KEY_TEMP_CAT,
+                QMContract.TemplateEntry.KEY_USAGE
 
 
         };
@@ -261,7 +262,7 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
                 projection,             // Columns to include in the resulting Cursor
                 selection,                   // No selection clause
                 null,                   // No selection arguments
-                null);                  // Default sort order
+                QMContract.TemplateEntry.KEY_USAGE + " DESC");                  // Default sort order
     }
 
     @Override

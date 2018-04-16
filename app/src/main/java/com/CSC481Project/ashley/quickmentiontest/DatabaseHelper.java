@@ -14,7 +14,7 @@ import com.CSC481Project.ashley.quickmentiontest.QMContract;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 22;
+    private static final int DB_VERSION = 23;
 
 
 
@@ -42,7 +42,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTableCategory = "CREATE TABLE " + QMContract.CategoryEntry.TABLE_NAME + " (" +
                 QMContract.CategoryEntry._ID2 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 QMContract.CategoryEntry.KEY_NAME + " TEXT, " +
-                QMContract.CategoryEntry.KEY_ICON + " INTEGER)";
+                QMContract.CategoryEntry.KEY_ICON + " INTEGER, " +
+                QMContract.CategoryEntry.KEY_USAGE + " INTEGER)";
         db.execSQL(createTableCategory);
 
 
@@ -52,25 +53,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 QMContract.TemplateEntry.KEY_REPEATS + " TEXT, " +
                 QMContract.TemplateEntry.KEY_TEMP_CAT + " INTEGER, " +
                 QMContract.TemplateEntry.KEY_CREATED_BY_USER + " INTEGER, " +
+                QMContract.TemplateEntry.KEY_USAGE + " INTEGER, " +
                 "FOREIGN KEY (" + QMContract.TemplateEntry.KEY_TEMP_CAT + ") REFERENCES " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry._ID + "))";
         db.execSQL(createTableTemplate);
 
         /* Insert values into category table */
-        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Home', " + R.drawable.ic_home_black_24dp + ")");
-        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Auto', " + R.drawable.ic_directions_car_black_24dp + ")");
-        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ") VALUES ('Health', " + R.drawable.ic_local_hospital_black_24dp + ")");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Home', " + R.drawable.ic_home_black_24dp + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Auto', " + R.drawable.ic_directions_car_black_24dp + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Health', " + R.drawable.ic_local_hospital_black_24dp + ", 0)");
 
 
 
         /* Insert values into template table */
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
-                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ") VALUES ('Do Laundry', 'Every Week', 1, 0 )");
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ", " + QMContract.TemplateEntry.KEY_USAGE + ") VALUES ('Do Laundry', 'Every Week', 1, 0, 0 )");
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
-                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ") VALUES ('Mow Lawn', 'Every 2 Weeks', 1, 0 )");
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ", " + QMContract.TemplateEntry.KEY_USAGE + ") VALUES ('Mow Lawn', 'Every 2 Weeks', 1, 0, 0 )");
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
-                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ") VALUES ('Wash Car', 'Every Week', 2, 0 )");
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ", " + QMContract.TemplateEntry.KEY_USAGE + ") VALUES ('Wash Car', 'Every Week', 2, 0, 0 )");
         db.execSQL("INSERT INTO " + QMContract.TemplateEntry.TABLE_NAME + "(" + QMContract.TemplateEntry.KEY_NAME + ", " +
-                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ") VALUES ('Drink Water', 'Every Day', 3, 0 )");
+                QMContract.TemplateEntry.KEY_REPEATS + ", " + QMContract.TemplateEntry.KEY_TEMP_CAT + ", " + QMContract.TemplateEntry.KEY_CREATED_BY_USER + ", " + QMContract.TemplateEntry.KEY_USAGE + ") VALUES ('Drink Water', 'Every Day', 3, 0, 0 )");
     }
 
     @Override

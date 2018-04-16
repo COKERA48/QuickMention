@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -50,6 +52,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     int alarmId = 0;
     Uri newUri;
     long timestamp;
+    String templateName, templateRepeats;
+    int idTempCat, usage;
 
 
     private Uri mCurrentReminderUri;
@@ -299,6 +303,31 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 // returning the content URI for the new reminder.
                 newUri = getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
 
+                usage = usage + 1;
+                ContentValues templateValues = new ContentValues();
+                templateValues.put(QMContract.TemplateEntry.KEY_USAGE, usage);
+                getContentResolver().update(mCurrentReminderUri, templateValues, null, null);
+                Log.d(TAG, "template usage: " + usage);
+
+                ContentResolver categoryResolver = this.getContentResolver();
+                String selection = QMContract.CategoryEntry._ID2 + " = " + idTempCat;
+                Cursor cursor = categoryResolver.query(QMContract.CategoryEntry.CONTENT_URI, new String[] {
+                        QMContract.CategoryEntry._ID2, QMContract.CategoryEntry.KEY_USAGE }, selection, null, null);
+
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    int catId = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry._ID2));
+                    int usageCat = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_USAGE));
+
+                    usageCat++;
+
+                    ContentValues categoryValues = new ContentValues();
+                    categoryValues.put(QMContract.CategoryEntry.KEY_USAGE, usageCat);
+
+                    Uri categoryUri = ContentUris.withAppendedId(QMContract.CategoryEntry.CONTENT_URI, catId);
+                    getContentResolver().update(categoryUri, categoryValues, null, null);
+                    Log.d(TAG, "category usage: " + usageCat);
+                }
 
                 // Show a toast message depending on whether or not the insertion was successful.
                 if (newUri == null) {
@@ -497,7 +526,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         QMContract.TemplateEntry._ID3,
                         QMContract.TemplateEntry.KEY_NAME,
                         QMContract.TemplateEntry.KEY_REPEATS,
-                        QMContract.TemplateEntry.KEY_TEMP_CAT
+                        QMContract.TemplateEntry.KEY_TEMP_CAT,
+                        QMContract.TemplateEntry.KEY_USAGE
                 };
                 loader = new CursorLoader(this,   // Parent activity context
                         mCurrentReminderUri,         // Query the content URI for the current reminder
@@ -572,12 +602,16 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
                     int nameColumnIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_NAME);
                     int repeatsColumnIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_REPEATS);
+                    int idTempCatIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_TEMP_CAT);
+                    int usageColumnIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_USAGE);
 
-                    String name = cursor.getString(nameColumnIndex);
-                    String repeats = cursor.getString(repeatsColumnIndex);
+                    templateName = cursor.getString(nameColumnIndex);
+                    templateRepeats = cursor.getString(repeatsColumnIndex);
+                    idTempCat = cursor.getInt(idTempCatIndex);
+                    usage = cursor.getInt(usageColumnIndex);
 
-                    editTextTaskName.setText(name);
-                    setRepeatsValue(repeats);
+                    editTextTaskName.setText(templateName);
+                    setRepeatsValue(templateRepeats);
                 }
                 break;
         }

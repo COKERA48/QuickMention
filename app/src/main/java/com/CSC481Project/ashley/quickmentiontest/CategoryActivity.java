@@ -74,7 +74,8 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
         String[] projection = {
                 QMContract.CategoryEntry._ID2,
                 QMContract.CategoryEntry.KEY_NAME,
-                QMContract.CategoryEntry.KEY_ICON
+                QMContract.CategoryEntry.KEY_ICON,
+                QMContract.CategoryEntry.KEY_USAGE
 
 
         };
@@ -84,7 +85,7 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
                 projection,             // Columns to include in the resulting Cursor
                 null,                   // No selection clause
                 null,                   // No selection arguments
-                null);                  // Default sort order
+                QMContract.CategoryEntry.KEY_USAGE + " DESC");                  // Default sort order
     }
 
     @Override
