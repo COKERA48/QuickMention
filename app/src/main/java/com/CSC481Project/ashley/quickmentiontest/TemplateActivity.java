@@ -52,18 +52,28 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_template);
         setTitle("Choose Template");
 
+        // Set up toolbar
         Toolbar toolbar = findViewById(R.id.toolbarTemplate);
         setSupportActionBar(toolbar);
 
+        // Recieve data from category that has been selected
         Intent intent = getIntent();
         Uri mCurrentReminderUri = intent.getData();
 
+        // Create cursor to extract category data
         mResolver = this.getContentResolver();
         Cursor cursor = null;
         if (mCurrentReminderUri != null) {
-            cursor = mResolver.query(mCurrentReminderUri, new String[] {
-                    QMContract.CategoryEntry._ID, QMContract.CategoryEntry.KEY_NAME, QMContract.CategoryEntry.KEY_ICON }, null, null, null);
+            cursor = mResolver.query(
+                    mCurrentReminderUri,
+                    new String[] {
+                    QMContract.CategoryEntry._ID, QMContract.CategoryEntry.KEY_NAME, QMContract.CategoryEntry.KEY_ICON },
+                    null,
+                    null,
+                    null);
         }
+
+        // Save category data to be used for display
         if (cursor != null && cursor.moveToFirst()) {
             catId = cursor.getInt(cursor
                     .getColumnIndex(QMContract.CategoryEntry._ID));
@@ -71,14 +81,22 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
             catIcon = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_ICON));
             cursor.close();
         }
+        // Display category icon and name at the top of activity
         image = findViewById(R.id.image);
         image.setImageResource(catIcon);
         TextView textViewCatName = findViewById(R.id.textViewCatName);
         textViewCatName.setText(catName);
 
+        // Create cursor to hold templates that belong to the selected category
         String selection = "(" + QMContract.TemplateEntry.KEY_TEMP_CAT + " = '" + catId + "')";
-        cursorTemplates = mResolver.query(QMContract.TemplateEntry.CONTENT_URI, new String [] { QMContract.TemplateEntry._ID3,
-                QMContract.TemplateEntry.KEY_NAME, QMContract.TemplateEntry.KEY_CREATED_BY_USER, QMContract.TemplateEntry.KEY_TEMP_CAT }, selection, null, null);
+        cursorTemplates = mResolver.query(QMContract.TemplateEntry.CONTENT_URI,
+                new String [] { QMContract.TemplateEntry._ID3, QMContract.TemplateEntry.KEY_NAME,
+                        QMContract.TemplateEntry.KEY_CREATED_BY_USER, QMContract.TemplateEntry.KEY_TEMP_CAT },
+                selection,              // Only select templates matching selected category
+                null,
+                null);
+
+        // Create list adapter with this cursor
         customAdapter = new TemplateListAdapter(getApplicationContext(), cursorTemplates, editMode);
 
 
@@ -90,7 +108,10 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 currentVehicleUri = ContentUris.withAppendedId(QMContract.TemplateEntry.CONTENT_URI, id);
+
+                // Templates are not being edited and user has selected one
                 if (!editMode) {
+                    // CreateTaskActivity is started and the chosen template data is sent
                     Intent intent = new Intent(TemplateActivity.this, CreateTaskActivity.class);
 
                     // Set the URI on the data field of the intent
@@ -98,10 +119,17 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
                     intent.putExtra("ClassName", "TemplateActivity");
                     startActivity(intent);
                 }
+                // User has selected a template to edit
                 else {
-
-                    Cursor cursor = getContentResolver().query(currentVehicleUri, new String[]{
-                            QMContract.TemplateEntry._ID3, QMContract.TemplateEntry.KEY_NAME, QMContract.TemplateEntry.KEY_REPEATS, QMContract.TemplateEntry.KEY_TEMP_CAT, QMContract.TemplateEntry.KEY_CREATED_BY_USER}, null, null, null);
+                    // Extract data from template selected
+                    Cursor cursor = getContentResolver().query(currentVehicleUri,
+                            new String[]{ QMContract.TemplateEntry._ID3, QMContract.TemplateEntry.KEY_NAME,
+                                    QMContract.TemplateEntry.KEY_REPEATS, QMContract.TemplateEntry.KEY_TEMP_CAT,
+                                    QMContract.TemplateEntry.KEY_CREATED_BY_USER},
+                            null,
+                            null,
+                            null);
+                    // Save template data for edit dialog window
                     if (cursor != null && cursor.moveToFirst()) {
                         templateName = cursor.getString(cursor
                                 .getColumnIndex(QMContract.TemplateEntry.KEY_NAME));
@@ -110,6 +138,7 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
 
 
                     }
+                    // An existing template has been selected, so a new one is not being created
                     newTemplate = false;
                     showInputDialog();
                 }
@@ -173,24 +202,29 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
         View promptView = layoutInflater.inflate(R.layout.template_input_dialog, null);
         alertDialogBuilder.setView(promptView);
 
-
+        // Setup layout variables
         editTextName = promptView.findViewById(R.id.editTextTempName);
         TextView textViewName = promptView.findViewById(R.id.textViewName);
         spinner = promptView.findViewById(R.id.spinner2);
         TextView textViewTitle = promptView.findViewById(R.id.textViewTitle);
 
+        // An already existing template is being edited
         if (!newTemplate) {
+            // If the template was not created by the user, only the repeats value can be edited
+            // The name is displayed as a textView and will not allow editing
             if (createdByUser == 0) {
                 editTextName.setVisibility(View.GONE);
                 textViewName.setVisibility(View.GONE);
                 textViewTitle.setText(templateName);
 
             }
+            // If the task was created by the user, the name and repeats value can be edited
             else {
                 editTextName.setText(templateName);
                 textViewTitle.setVisibility(View.GONE);
             }
 
+            // Set spinner value to the repeat value of selected template
             String[] repeatStrings = getResources().getStringArray(R.array.repeat_options);
             for (int i = 0; i < repeatStrings.length; i++)
             {
@@ -202,19 +236,30 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
 
         // setup a dialog window
         alertDialogBuilder.setCancelable(false)
+                // Save button
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        // Save values to inserted to database
                         ContentValues values = new ContentValues();
 
                         values.put(QMContract.TemplateEntry.KEY_REPEATS, String.valueOf(spinner.getSelectedItem()));
-                        values.put(QMContract.TemplateEntry.KEY_TEMP_CAT, catId);
+
+
+                        // If this is a new template, get name input,  set created by user to 1 (true), and set category foreign key
                         if(newTemplate) {
                             values.put(QMContract.TemplateEntry.KEY_NAME, editTextName.getText().toString());
                             values.put(QMContract.TemplateEntry.KEY_CREATED_BY_USER, 1);
+                            values.put(QMContract.TemplateEntry.KEY_TEMP_CAT, catId);
+                            // insert new template to db
                             mResolver.insert(QMContract.TemplateEntry.CONTENT_URI, values);
-                        } else  {
-                            values.put(QMContract.TemplateEntry.KEY_NAME, templateName);
-                            values.put(QMContract.TemplateEntry.KEY_CREATED_BY_USER, createdByUser);
+                        }
+                        // If existing template
+                        else  {
+                            // If created by user, get updated name
+                            if (createdByUser == 1) {
+                                values.put(QMContract.TemplateEntry.KEY_NAME, editTextName.getText().toString());
+                            }
+                            // update changes to template
                             mResolver.update(currentVehicleUri, values, null, null);
                         }
 
@@ -229,6 +274,7 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
                             }
                         });
 
+        // If the template was created by the user, they may delete it
         if(createdByUser == 1) {
             alertDialogBuilder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -257,12 +303,12 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
 
         String selection = "(" + QMContract.TemplateEntry.KEY_TEMP_CAT + " = '" + catId + "')";
 
-        return new CursorLoader(this,   // Parent activity context
-                QMContract.TemplateEntry.CONTENT_URI,   // Provider content URI to query
-                projection,             // Columns to include in the resulting Cursor
-                selection,                   // No selection clause
-                null,                   // No selection arguments
-                QMContract.TemplateEntry.KEY_USAGE + " DESC");                  // Default sort order
+        return new CursorLoader(this,
+                QMContract.TemplateEntry.CONTENT_URI,
+                projection,
+                selection,                      // select templates that belong to chosen category
+                null,
+                QMContract.TemplateEntry.KEY_USAGE + " DESC");      // sort templates by usage
     }
 
     @Override

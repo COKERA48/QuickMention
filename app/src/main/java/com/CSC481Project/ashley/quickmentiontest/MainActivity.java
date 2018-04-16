@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // set up drawerLayout and toolbar
         DrawerLayout drawerLayout = findViewById(R.id.drawer);
         Toolbar toolbar = findViewById(R.id.toolbarMainActivity);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
@@ -101,18 +102,21 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 
         };
 
+        // Format today's date
         Calendar c = Calendar.getInstance();
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         String selectDate = dateFormat.format(c.getTime());
+
+        // Show only tasks that are scheduled for today
         String selection = "(" + QMContract.TaskEntry.KEY_START_DATE + " = '" + selectDate + "')";
 
 
-        return new CursorLoader(this,   // Parent activity context
-                QMContract.TaskEntry.CONTENT_URI,   // Provider content URI to query
-                projection,             // Columns to include in the resulting Cursor
-                selection,                   // No selection clause
-                null,                   // No selection arguments
-                QMContract.TaskEntry.KEY_TIMESTAMP);                  // Default sort order
+        return new CursorLoader(this,
+                QMContract.TaskEntry.CONTENT_URI,
+                projection,
+                selection,
+                null,
+                QMContract.TaskEntry.KEY_TIMESTAMP);     // Sort tasks by timestamp (start date/time)
 
     }
 

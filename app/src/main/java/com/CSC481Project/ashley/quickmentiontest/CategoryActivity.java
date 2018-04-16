@@ -33,12 +33,14 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_category);
         setTitle("Choose Category");
 
+        // Set up toolbar
         Toolbar toolbar = findViewById(R.id.toolbarCategory);
         setSupportActionBar(toolbar);
 
         ListView listViewCategories = findViewById(R.id.listViewCategories);
 
 
+        // Gets category data to be displayed to listView
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_category,
                 null,
@@ -50,12 +52,13 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                // When a category is clicked, it will start the template activity and pass
+                // the selected category's data
+
                 Intent intent = new Intent(CategoryActivity.this, TemplateActivity.class);
 
                 Uri currentVehicleUri = ContentUris.withAppendedId(QMContract.CategoryEntry.CONTENT_URI, id);
 
-
-                // Set the URI on the data field of the intent
                 intent.setData(currentVehicleUri);
 
                 startActivity(intent);
@@ -80,12 +83,12 @@ public class CategoryActivity extends AppCompatActivity implements LoaderManager
 
         };
 
-        return new CursorLoader(this,   // Parent activity context
-                QMContract.CategoryEntry.CONTENT_URI,   // Provider content URI to query
-                projection,             // Columns to include in the resulting Cursor
-                null,                   // No selection clause
-                null,                   // No selection arguments
-                QMContract.CategoryEntry.KEY_USAGE + " DESC");                  // Default sort order
+        return new CursorLoader(this,
+                QMContract.CategoryEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                QMContract.CategoryEntry.KEY_USAGE + " DESC");   // Sort categories by usage
     }
 
     @Override

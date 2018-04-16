@@ -34,7 +34,7 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_tasks);
 
-        //setup side menu and toggle button
+        //setup side menu, toggle button, and toolbar
         NavigationView menu = findViewById(R.id.navigationView);
         Toolbar toolbar = findViewById(R.id.toolbarListTasks);
         menu.setNavigationItemSelectedListener(this); //have app call onNavigationItemSelected() when menu option is used

@@ -91,13 +91,15 @@ public class Alarm extends BroadcastReceiver {
         } else {
             builder.setSmallIcon(R.drawable.ic_logo_transparent);
         }
-        notificationManager.notify(alarmId,builder.build());
+        if(alarmId != 0) {
+            notificationManager.notify(alarmId,builder.build());
 
-        if (interval != 0) {
-            try {
-                rescheduleAlarm(context);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (interval != 0) {
+                try {
+                    rescheduleAlarm(context);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -53,7 +53,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     Uri newUri;
     long timestamp;
     String templateName, templateRepeats;
-    int idTempCat, usage;
+    int idTempCat, usageTemplate;
 
 
     private Uri mCurrentReminderUri;
@@ -75,9 +75,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
 
+        // Set up toolbar
         Toolbar toolbar = findViewById(R.id.toolbarTask);
         setSupportActionBar(toolbar);
 
+        // Set up layout variables
         editTextTaskName = findViewById(R.id.editTextTaskName);
         tvStartDate = findViewById(R.id.tvStartDate);
         tvStartTime = findViewById(R.id.tvStartTime);
@@ -87,30 +89,31 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         buttonSaveTask = findViewById(R.id.buttonSaveTask);
         Button buttonDeleteTask = findViewById(R.id.buttonDeleteTask);
         spinner = findViewById(R.id.spinner);
+
+        // Get values passed by previous activity
         Intent intent = getIntent();
         mCurrentReminderUri = intent.getData();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             sourceClass = bundle.getString("ClassName");
         }
-
         if (sourceClass != null) {
+            // If sourceClass is TemplateActivity, a new task is being created
             if (sourceClass.equals("TemplateActivity")) {
                 Log.d(TAG, "test");
                 setTitle("New Task");
-
                 getLoaderManager().initLoader(1, null, this);
-
                 buttonDeleteTask.setVisibility(View.GONE);
-            } else {
-
+            }
+            // if sourceClass is not TemplateActivity, a task that is already created is being updated/viewed
+            else {
                 setTitle("Edit Task");
                 buttonSaveTask.setText("Update Task");
-
                 getLoaderManager().initLoader(EXISTING_VEHICLE_LOADER, null, this);
             }
         }
 
+        // Format for dates and times
         dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         timeFormat = new SimpleDateFormat( "hh:mm a", Locale.US);
 
@@ -127,8 +130,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         tvEndDate.setText(dateFormat.format(calEnd.getTime()));
         tvEndTime.setText(timeFormat.format(calEnd.getTime()));
 
-
-
+        // Set up click listeners
         tvStartDate.setOnClickListener(this);
         tvStartTime.setOnClickListener(this);
         tvEndDate.setOnClickListener(this);
@@ -238,14 +240,13 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     public boolean checkTimes() {
 
         Calendar now = Calendar.getInstance();
-        // If start date/time is after end date/time OR start date/time is before now,
-        // user may not save task.
+        // If start date/time is after end date/time user may not save task
         if (calStart.compareTo(calEnd) > 0) {
             Toast.makeText(this, "Start time must be before end time.",
                     Toast.LENGTH_SHORT).show();
             return false;
         }
-
+        // If start date/time is before now, user may not save task
         if (calStart.compareTo(now) < 0 ) {
             Toast.makeText(this, "Start time must be set to a future time.",
                     Toast.LENGTH_SHORT).show();
@@ -258,7 +259,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     public void saveTask() {
         if (checkTimes()) {
 
-
+            // Get values from layout
             String name = editTextTaskName.getText().toString();
             String startDate = dateFormat.format(calStart.getTime());
             String startTime = timeFormat.format(calStart.getTime());
@@ -303,15 +304,16 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 // returning the content URI for the new reminder.
                 newUri = getContentResolver().insert(QMContract.TaskEntry.CONTENT_URI, values);
 
-                usage = usage + 1;
+                // Increment template usage value and update in database
+                usageTemplate++;
                 ContentValues templateValues = new ContentValues();
-                templateValues.put(QMContract.TemplateEntry.KEY_USAGE, usage);
+                templateValues.put(QMContract.TemplateEntry.KEY_USAGE, usageTemplate);
                 getContentResolver().update(mCurrentReminderUri, templateValues, null, null);
-                Log.d(TAG, "template usage: " + usage);
+                Log.d(TAG, "template usage: " + usageTemplate);
 
-                ContentResolver categoryResolver = this.getContentResolver();
+                // Get data for category that template belongs to
                 String selection = QMContract.CategoryEntry._ID2 + " = " + idTempCat;
-                Cursor cursor = categoryResolver.query(QMContract.CategoryEntry.CONTENT_URI, new String[] {
+                Cursor cursor = getContentResolver().query(QMContract.CategoryEntry.CONTENT_URI, new String[] {
                         QMContract.CategoryEntry._ID2, QMContract.CategoryEntry.KEY_USAGE }, selection, null, null);
 
 
@@ -319,11 +321,11 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     int catId = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry._ID2));
                     int usageCat = cursor.getInt(cursor.getColumnIndex(QMContract.CategoryEntry.KEY_USAGE));
 
+                    // Increment usage value for category and update in database
                     usageCat++;
 
                     ContentValues categoryValues = new ContentValues();
                     categoryValues.put(QMContract.CategoryEntry.KEY_USAGE, usageCat);
-
                     Uri categoryUri = ContentUris.withAppendedId(QMContract.CategoryEntry.CONTENT_URI, catId);
                     getContentResolver().update(categoryUri, categoryValues, null, null);
                     Log.d(TAG, "category usage: " + usageCat);
@@ -364,6 +366,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
     private void setAlarm() {
         long interval = 0;
+        // Set interval milliseconds based on repeat value
         switch (spinner.getSelectedItem().toString()) {
             case "Every Day":
                 interval = 86400000;
@@ -385,21 +388,28 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
 
+        // Time in milliseconds the reminder should trigger
         long initialTime = calStart.getTimeInMillis();
 
+        // Setup for alarm
         Intent intent = new Intent(getApplicationContext(), Alarm.class);
-
-        if (newUri != null) {
-            intent.setData(newUri);
-        }
-        else intent.setData(mCurrentReminderUri);
-
-        intent.putExtra("initialTime", initialTime);
-        intent.putExtra("interval", interval);
-
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+        // If this is a new task, pass new task data to alarm class
+        if (newUri != null) {
+            intent.setData(newUri);
+        }
+        // If this is an existing task, pass updated task data to alarm class
+        else intent.setData(mCurrentReminderUri);
+
+        // Also pass trigger time and interval data
+        intent.putExtra("initialTime", initialTime);
+        intent.putExtra("interval", interval);
+
+
+
+        // Set alarm using method corresponding to sdk version
         if (alarmManager != null) {
             if (Build.VERSION.SDK_INT >= 19) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, initialTime, pendingIntent);
@@ -429,28 +439,36 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View view) {
         switch(view.getId())
         {
+            // Listener for start date textView
             case R.id.tvStartDate:
+                // Create date picker
                 DatePickerDialog dpdStart = new DatePickerDialog(CreateTaskActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth, StartDateSetListener, calStart.get(Calendar.YEAR), calStart.get(Calendar.MONTH), calStart.get(Calendar.DAY_OF_MONTH));
                 if (dpdStart.getWindow() != null)
                     dpdStart.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dpdStart.show();
                 break;
+            // Listener for start time textView
             case R.id.tvStartTime:
+                // Create time picker
                 TimePickerDialog tpdStart = new TimePickerDialog(CreateTaskActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth, StartTimeSetListener, calStart.get(Calendar.HOUR_OF_DAY), calStart.get(Calendar.MINUTE), false);
                 if(tpdStart.getWindow() != null)
                     tpdStart.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 tpdStart.show();
                 break;
+            // Listener for end date textView
             case R.id.tvEndDate:
+                // Create date picker
                 DatePickerDialog dpdEnd = new DatePickerDialog(CreateTaskActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth, EndDateSetListener, calEnd.get(Calendar.YEAR), calEnd.get(Calendar.MONTH), calEnd.get(Calendar.DAY_OF_MONTH));
                 if (dpdEnd.getWindow() != null)
                     dpdEnd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dpdEnd.show();
                 break;
+            // Listener for end time textView
             case R.id.tvEndTime:
+                // Create time picker
                 TimePickerDialog tpdEnd = new TimePickerDialog(CreateTaskActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth, EndTimeSetListener, calEnd.get(Calendar.HOUR_OF_DAY), calEnd.get(Calendar.MINUTE), false);
                 if (tpdEnd.getWindow() != null)
@@ -499,6 +517,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         CursorLoader loader;
         switch (i){
+            // Get data for already existing task that has been selected
             case EXISTING_VEHICLE_LOADER:
                 String[] projection = {
                         QMContract.TaskEntry._ID1,
@@ -514,14 +533,15 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 };
 
                 // This loader will execute the ContentProvider's query method on a background thread
-                loader = new CursorLoader(this,   // Parent activity context
-                        mCurrentReminderUri,         // Query the content URI for the current reminder
-                        projection,             // Columns to include in the resulting Cursor
-                        null,                   // No selection clause
-                        null,                   // No selection arguments
-                        null);                  // Default sort order
+                loader = new CursorLoader(this,
+                        mCurrentReminderUri,
+                        projection,
+                        null,
+                        null,
+                        null);
                 break;
             case 1:
+                // Get data for template that has been selected to create new task
                 String[] projection2 = {
                         QMContract.TemplateEntry._ID3,
                         QMContract.TemplateEntry.KEY_NAME,
@@ -550,8 +570,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
 
         switch (loader.getId()) {
             case 0:
-                // Proceed with moving to the first row of the cursor and reading data from it
-                // (This should be the only row in the cursor)
+                // Reading task data from cursor (Already existing task)
                 if (cursor.moveToFirst()) {
                     int nameColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_NAME);
                     int startDateColumnIndex = cursor.getColumnIndex(QMContract.TaskEntry.KEY_START_DATE);
@@ -575,7 +594,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                     timestamp = cursor.getLong(timestampColumnIndex);
 
 
-                    // Update the views on the screen with the values from the database
+                    // Update the views with the task values from the database
                     editTextTaskName.setText(name);
                     tvStartDate.setText(startDate);
                     tvStartTime.setText(startTime);
@@ -599,17 +618,19 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                 break;
             case 1:
                 if (cursor.moveToFirst()){
-
+                    // Reading template data from cursor (New task)
                     int nameColumnIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_NAME);
                     int repeatsColumnIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_REPEATS);
                     int idTempCatIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_TEMP_CAT);
                     int usageColumnIndex = cursor.getColumnIndex(QMContract.TemplateEntry.KEY_USAGE);
 
+                    // Extract the values from the Cursor for the given column index
                     templateName = cursor.getString(nameColumnIndex);
                     templateRepeats = cursor.getString(repeatsColumnIndex);
                     idTempCat = cursor.getInt(idTempCatIndex);
-                    usage = cursor.getInt(usageColumnIndex);
+                    usageTemplate = cursor.getInt(usageColumnIndex);
 
+                    // Update the views with the template values from the database
                     editTextTaskName.setText(templateName);
                     setRepeatsValue(templateRepeats);
                 }
