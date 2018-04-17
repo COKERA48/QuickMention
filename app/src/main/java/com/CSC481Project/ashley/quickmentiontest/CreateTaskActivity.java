@@ -407,7 +407,8 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         intent.putExtra("initialTime", initialTime);
         intent.putExtra("interval", interval);
 
-
+        //create pendingintent again because intent was modified
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Set alarm using method corresponding to sdk version
         if (alarmManager != null) {
