@@ -33,6 +33,7 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_tasks);
+        setTitle("All Tasks");
 
         //setup side menu, toggle button, and toolbar
         NavigationView menu = findViewById(R.id.navigationView);
