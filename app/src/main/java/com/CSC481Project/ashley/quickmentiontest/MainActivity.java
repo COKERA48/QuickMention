@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         adapter = new SimpleCursorAdapter(this,
                 R.layout.single_row_task,
                 null,
-                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_START_DATE, QMContract.TaskEntry.KEY_START_TIME },
+                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_DATE, QMContract.TaskEntry.KEY_TIME},
                 new int[] { R.id.textViewTaskName, R.id.textViewTaskDate, R.id.textViewTaskTime }, 0);
 
         listViewUpcomingTasks.setAdapter(adapter);
@@ -91,10 +91,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         String[] projection = {
                 QMContract.TaskEntry._ID1,
                 QMContract.TaskEntry.KEY_NAME,
-                QMContract.TaskEntry.KEY_START_DATE,
-                QMContract.TaskEntry.KEY_START_TIME,
-                QMContract.TaskEntry.KEY_END_DATE,
-                QMContract.TaskEntry.KEY_END_TIME,
+                QMContract.TaskEntry.KEY_DATE,
+                QMContract.TaskEntry.KEY_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
                 QMContract.TaskEntry.KEY_NOTES,
                 QMContract.TaskEntry.KEY_ALARM_ID,
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         String selectDate = dateFormat.format(c.getTime());
 
         // Show only tasks that are scheduled for today
-        String selection = "(" + QMContract.TaskEntry.KEY_START_DATE + " = '" + selectDate + "')";
+        String selection = "(" + QMContract.TaskEntry.KEY_DATE + " = '" + selectDate + "')";
 
 
         return new CursorLoader(this,

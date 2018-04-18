@@ -4,9 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.CSC481Project.ashley.quickmentiontest.R;
-import com.CSC481Project.ashley.quickmentiontest.QMContract;
-
 /**
  * Created by Ashley on 2/21/2018.
  */
@@ -14,7 +11,7 @@ import com.CSC481Project.ashley.quickmentiontest.QMContract;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 23;
+    private static final int DB_VERSION = 24;
 
 
 
@@ -29,10 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTableTask = "CREATE TABLE " + QMContract.TaskEntry.TABLE_NAME + " (" +
                 QMContract.TaskEntry._ID1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 QMContract.TaskEntry.KEY_NAME + " TEXT, " +
-                QMContract.TaskEntry.KEY_START_DATE + " TEXT, " +
-                QMContract.TaskEntry.KEY_START_TIME + " TEXT, " +
-                QMContract.TaskEntry.KEY_END_DATE + " TEXT, " +
-                QMContract.TaskEntry.KEY_END_TIME + " TEXT, " +
+                QMContract.TaskEntry.KEY_DATE + " TEXT, " +
+                QMContract.TaskEntry.KEY_TIME + " TEXT, " +
                 QMContract.TaskEntry.KEY_REPEATS + " TEXT, " +
                 QMContract.TaskEntry.KEY_NOTES + " TEXT, " +
                 QMContract.TaskEntry.KEY_ALARM_ID + " INTEGER, " +
