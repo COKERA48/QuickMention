@@ -69,10 +69,10 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
 
 
         adapter = new SimpleCursorAdapter(this,
-                R.layout.single_row_task,
+                R.layout.single_row_task_no_date,
                 null,
-                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_DATE, QMContract.TaskEntry.KEY_TIME},
-                new int[] { R.id.textViewTaskName, R.id.textViewTaskDate, R.id.textViewTaskTime }, 0);
+                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_TIME},
+                new int[] { R.id.textViewTaskName, R.id.textViewTaskTime }, 0);
 
         listview.setAdapter(adapter);
 

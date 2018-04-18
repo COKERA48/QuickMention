@@ -10,9 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimaryDark"
-        android:elevation="4dp"
+        android:elevation="10dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@android:color/background_light"/>
 
     <android.support.v4.widget.DrawerLayout
         android:layout_width="match_parent"
@@ -53,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="No Tasks!"
+            android:text="@string/no_tasks"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -62,7 +63,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/drawer_menu_calendarview" >
+        app:menu="@menu/drawer_menu_calendarview"
+        app:itemIconTint="@color/colorPrimaryDark"
+        app:itemTextAppearance="@style/MyText">
     </android.support.design.widget.NavigationView>
     </android.support.v4.widget.DrawerLayout>
 

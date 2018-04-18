@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
-    private static final int DB_VERSION = 24;
+    private static final int DB_VERSION = 26;
 
 
 
@@ -53,9 +53,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createTableTemplate);
 
         /* Insert values into category table */
-        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Home', " + R.drawable.ic_home_black_24dp + ", 0)");
-        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Auto', " + R.drawable.ic_directions_car_black_24dp + ", 0)");
-        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Health', " + R.drawable.ic_local_hospital_black_24dp + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Home', " + R.drawable.ic_home + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Auto', " + R.drawable.ic_auto + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Health', " + R.drawable.ic_health + ", 0)");
 
 
 

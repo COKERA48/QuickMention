@@ -33,8 +33,6 @@
     <string name="done">Done</string>
 
     <!-- for CreateTaskActivity -->
-    <string name="task_name">Task Name:</string>
-    <string name="date">Date:</string>
     <string name="time">Time:</string>
     <string name="repeats">Repeats:</string>
     <string name="notes">Notes:</string>
@@ -45,6 +43,8 @@
     <string name="no_tasks">No Tasks!</string>
 
     <string name="name">Name:</string>
+    <string name="date">Date:</string>
+    <string name="home">Home</string>
 
     <!--    Repeat task options     -->
     <string-array name="repeat_options">
