@@ -2,6 +2,6 @@
     android:layout_height="wrap_content"
     android:gravity="end"
     android:textAlignment="viewEnd"
-    android:textSize="24sp"
+    android:textSize="20sp"
     xmlns:android="http://schemas.android.com/apk/res/android" />
 
