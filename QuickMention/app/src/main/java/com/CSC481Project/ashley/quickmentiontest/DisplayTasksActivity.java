@@ -52,10 +52,10 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
         listView.setEmptyView(textViewNoTasks);
 
         adapter = new SimpleCursorAdapter(this,
-                R.layout.single_row_task,
+                R.layout.single_row_task_with_date,
                 null,
-                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_START_DATE, QMContract.TaskEntry.KEY_START_TIME },
-                new int[] { R.id.textViewTaskName, R.id.textViewTaskDate, R.id.textViewTaskTime }, 0);
+                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_DATE, QMContract.TaskEntry.KEY_TIME, QMContract.TaskEntry.KEY_NOTES},
+                new int[] { R.id.textViewTaskName, R.id.textViewTaskDate, R.id.textViewTaskTime, R.id.textViewTaskNotes }, 0);
 
         listView.setAdapter(adapter);
 
@@ -83,10 +83,8 @@ public class DisplayTasksActivity extends AppCompatActivity implements LoaderMan
         String[] projection = {
                 QMContract.TaskEntry._ID,
                 QMContract.TaskEntry.KEY_NAME,
-                QMContract.TaskEntry.KEY_START_DATE,
-                QMContract.TaskEntry.KEY_START_TIME,
-                QMContract.TaskEntry.KEY_END_DATE,
-                QMContract.TaskEntry.KEY_END_TIME,
+                QMContract.TaskEntry.KEY_DATE,
+                QMContract.TaskEntry.KEY_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
                 QMContract.TaskEntry.KEY_NOTES,
                 QMContract.TaskEntry.KEY_ALARM_ID,

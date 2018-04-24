@@ -56,7 +56,7 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
         Toolbar toolbar = findViewById(R.id.toolbarTemplate);
         setSupportActionBar(toolbar);
 
-        // Recieve data from category that has been selected
+        // Receive data from category that has been selected
         Intent intent = getIntent();
         Uri mCurrentReminderUri = intent.getData();
 

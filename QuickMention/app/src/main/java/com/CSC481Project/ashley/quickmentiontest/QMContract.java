@@ -34,10 +34,8 @@ class QMContract {
         final static String _ID1 = BaseColumns._ID;
 
         static final String KEY_NAME = "task_name";
-        static final String KEY_START_DATE = "start_date";
-        static final String KEY_START_TIME = "start_time";
-        static final String KEY_END_DATE = "end_date";
-        static final String KEY_END_TIME = "end_time";
+        static final String KEY_DATE = "date";
+        static final String KEY_TIME = "time";
         static final String KEY_REPEATS = "repeats";
         static final String KEY_NOTES = "notes";
         static final String KEY_ALARM_ID = "alarm_id";
@@ -58,7 +56,7 @@ class QMContract {
         final static String _ID2 = BaseColumns._ID;
         static final String KEY_NAME = "category_name";
         static final String KEY_ICON = "icon";
-        public static final String KEY_USAGE = "usage";
+        static final String KEY_USAGE = "usage";
     }
 
     static final class TemplateEntry implements BaseColumns {
@@ -76,7 +74,7 @@ class QMContract {
         static final String KEY_REPEATS = "repeats";
         static final String KEY_TEMP_CAT = "template_category";
         static final String KEY_CREATED_BY_USER = "created_by_user";
-        public static final String KEY_USAGE = "usage";
+        static final String KEY_USAGE = "usage";
     }
 
 

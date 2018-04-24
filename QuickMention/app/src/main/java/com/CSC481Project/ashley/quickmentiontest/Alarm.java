@@ -21,7 +21,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -30,7 +29,7 @@ import java.util.Locale;
 
 public class Alarm extends BroadcastReceiver {
     private static final String TAG = "Alarm";
-    private String taskName, startDate, startTime, endDate, endTime, repeats, notes;
+    private String taskName, date, time, repeats, notes;
     private long interval, initialTime, timestamp;
     private int alarmId;
     Calendar c;
@@ -49,10 +48,8 @@ public class Alarm extends BroadcastReceiver {
         ContentResolver mResolver = context.getContentResolver();
         Cursor cursor = mResolver.query(mCurrentReminderUri, new String[] {
                         QMContract.TaskEntry.KEY_NAME,
-                        QMContract.TaskEntry.KEY_START_DATE,
-                        QMContract.TaskEntry.KEY_START_TIME,
-                        QMContract.TaskEntry.KEY_END_DATE,
-                        QMContract.TaskEntry.KEY_END_TIME,
+                        QMContract.TaskEntry.KEY_DATE,
+                        QMContract.TaskEntry.KEY_TIME,
                         QMContract.TaskEntry.KEY_REPEATS,
                         QMContract.TaskEntry.KEY_NOTES,
                         QMContract.TaskEntry.KEY_ALARM_ID,
@@ -63,10 +60,8 @@ public class Alarm extends BroadcastReceiver {
 
         if (cursor != null && cursor.moveToFirst()) {
             taskName = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_NAME));
-            startDate = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_START_DATE));
-            startTime = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_START_TIME));
-            endDate = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_END_DATE));
-            endTime = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_END_TIME));
+            date = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_DATE));
+            time = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_TIME));
             repeats = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_REPEATS));
             notes = cursor.getString(cursor.getColumnIndex(QMContract.TaskEntry.KEY_NOTES));
             alarmId = cursor.getInt(cursor.getColumnIndex(QMContract.TaskEntry.KEY_ALARM_ID));
@@ -116,28 +111,17 @@ public class Alarm extends BroadcastReceiver {
         DateFormat tf = new SimpleDateFormat("hh:mm a", Locale.US);
 
         //save new start date and time strings for new task
-        startDate = df.format(c.getTime());
-        startTime = tf.format(c.getTime());
+        date = df.format(c.getTime());
+        time = tf.format(c.getTime());
 
         DateFormat dtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
 
-        //reset end date and time by getting the old time in millis and adding interval
-        Date end = dtf.parse(endDate + " " + endTime);
-        Calendar c2 = Calendar.getInstance();
-        c2.setTimeInMillis(end.getTime());
-        long endTimeInMillis = c2.getTimeInMillis();
-        endTimeInMillis += interval;
-        c2.setTimeInMillis(endTimeInMillis);
-        endDate = df.format(c2.getTime());
-        endTime = tf.format(c2.getTime());
 
         //setting values for new task to be created
         ContentValues values = new ContentValues();
         values.put(QMContract.TaskEntry.KEY_NAME, taskName);
-        values.put(QMContract.TaskEntry.KEY_START_DATE, startDate);
-        values.put(QMContract.TaskEntry.KEY_START_TIME, startTime);
-        values.put(QMContract.TaskEntry.KEY_END_DATE, endDate);
-        values.put(QMContract.TaskEntry.KEY_END_TIME, endTime);
+        values.put(QMContract.TaskEntry.KEY_DATE, date);
+        values.put(QMContract.TaskEntry.KEY_TIME, time);
         values.put(QMContract.TaskEntry.KEY_REPEATS, repeats);
         values.put(QMContract.TaskEntry.KEY_NOTES, notes);
         values.put(QMContract.TaskEntry.KEY_ALARM_ID, alarmId);

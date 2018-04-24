@@ -24,8 +24,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,10 +69,10 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
 
 
         adapter = new SimpleCursorAdapter(this,
-                R.layout.single_row_task,
+                R.layout.single_row_task_no_date,
                 null,
-                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_START_DATE, QMContract.TaskEntry.KEY_START_TIME },
-                new int[] { R.id.textViewTaskName, R.id.textViewTaskDate, R.id.textViewTaskTime }, 0);
+                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_TIME},
+                new int[] { R.id.textViewTaskName, R.id.textViewTaskTime }, 0);
 
         listview.setAdapter(adapter);
 
@@ -125,10 +123,8 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
         String[] projection = {
                 QMContract.TaskEntry._ID1,
                 QMContract.TaskEntry.KEY_NAME,
-                QMContract.TaskEntry.KEY_START_DATE,
-                QMContract.TaskEntry.KEY_START_TIME,
-                QMContract.TaskEntry.KEY_END_DATE,
-                QMContract.TaskEntry.KEY_END_TIME,
+                QMContract.TaskEntry.KEY_DATE,
+                QMContract.TaskEntry.KEY_TIME,
                 QMContract.TaskEntry.KEY_REPEATS,
                 QMContract.TaskEntry.KEY_NOTES,
                 QMContract.TaskEntry.KEY_ALARM_ID,
@@ -136,7 +132,7 @@ public class CalendarViewActivity extends AppCompatActivity implements LoaderMan
 
         };
 
-        String selection = "(" + QMContract.TaskEntry.KEY_START_DATE + " = '" + selectedDate + "')";
+        String selection = "(" + QMContract.TaskEntry.KEY_DATE + " = '" + selectedDate + "')";
 
 
         return new CursorLoader(this,   // Parent activity context
