@@ -11,7 +11,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final String DB_NAME = "quick_mention_db";
+<<<<<<< HEAD
     private static final int DB_VERSION = 28;
+=======
+    private static final int DB_VERSION = 24;
+>>>>>>> parent of 7f3531c... working on UI
 
 
 
@@ -53,12 +57,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createTableTemplate);
 
         /* Insert values into category table */
+<<<<<<< HEAD
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Home', " + R.drawable.ic_home + ", 0)");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Auto', " + R.drawable.ic_auto + ", 0)");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Medical', " + R.drawable.ic_health + ", 0)");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Work', " + R.drawable.ic_work + ", 0)");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('School', " + R.drawable.ic_school + ", 0)");
         db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Fitness', " + R.drawable.ic_fitness + ", 0)");
+=======
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Home', " + R.drawable.ic_home_black_24dp + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Auto', " + R.drawable.ic_directions_car_black_24dp + ", 0)");
+        db.execSQL("INSERT INTO " + QMContract.CategoryEntry.TABLE_NAME + "(" + QMContract.CategoryEntry.KEY_NAME + ", " + QMContract.CategoryEntry.KEY_ICON + ", " + QMContract.CategoryEntry.KEY_USAGE + ") VALUES ('Health', " + R.drawable.ic_local_hospital_black_24dp + ", 0)");
+
+>>>>>>> parent of 7f3531c... working on UI
 
 
         /* Insert values into template table */

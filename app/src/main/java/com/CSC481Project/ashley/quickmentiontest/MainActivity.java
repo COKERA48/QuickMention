@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         NavigationView navigation = findViewById(R.id.navigationView);
         navigation.setNavigationItemSelectedListener(this);
         TextView textViewNoTasks = findViewById(R.id.textViewNoTasks);
@@ -58,10 +57,10 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         listViewUpcomingTasks.setEmptyView(textViewNoTasks);
 
         adapter = new SimpleCursorAdapter(this,
-                R.layout.single_row_task_no_date,
+                R.layout.single_row_task,
                 null,
-                new String[] { QMContract.TaskEntry.KEY_NAME,  QMContract.TaskEntry.KEY_TIME},
-                new int[] { R.id.textViewTaskName,  R.id.textViewTaskTime }, 0);
+                new String[] { QMContract.TaskEntry.KEY_NAME, QMContract.TaskEntry.KEY_DATE, QMContract.TaskEntry.KEY_TIME},
+                new int[] { R.id.textViewTaskName, R.id.textViewTaskDate, R.id.textViewTaskTime }, 0);
 
         listViewUpcomingTasks.setAdapter(adapter);
 
