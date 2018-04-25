@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+=======
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="design_navigation_icon_size" tools:override="true">40dp</dimen>
+>>>>>>> parent of f64859f... Reduced font sizes on Create Task page to fit screen and made navigation icons bigger.
 </resources>
