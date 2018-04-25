@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -43,7 +44,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     private DatePickerDialog.OnDateSetListener onDateSetListener;
     private TimePickerDialog.OnTimeSetListener onTimeSetListener;
     Calendar calendar;
-    private static final String TAG = "TaskActivity";
+    private static final String TAG = "CreateTaskActivity";
     Spinner spinner;
     DateFormat dateFormat, timeFormat;
     String sourceClass = "";
@@ -52,6 +53,7 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     long timestamp;
     String templateName, templateRepeats;
     int idTempCat, usageTemplate;
+    String[] repeatOptions;
 
 
     private Uri mCurrentReminderUri;
@@ -83,6 +85,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
         Button buttonSaveTask = findViewById(R.id.buttonSaveTask);
         Button buttonDeleteTask = findViewById(R.id.buttonDeleteTask);
         spinner = findViewById(R.id.spinner);
+        repeatOptions = this.getResources().getStringArray(R.array.repeat_options);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.single_row_spinner, repeatOptions);
+        //adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
         // Get values passed by previous activity
         Intent intent = getIntent();
@@ -182,10 +188,10 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
     // Gets string array of spinner options. Compares the options to the repeat value of
     // template. Sets spinner selected value to that option.
     private void setRepeatsValue(String repeats) {
-        String[] repeatStrings = this.getResources().getStringArray(R.array.repeat_options);
-        for (int i = 0; i < repeatStrings.length; i++)
+
+        for (int i = 0; i < repeatOptions.length; i++)
         {
-            if (repeatStrings[i].equals(repeats)) {
+            if (repeatOptions[i].equals(repeats)) {
                 spinner.setSelection(i);
             }
         }

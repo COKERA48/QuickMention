@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/home" android:title="Home" android:icon="@drawable/ic_home_black_24dp"/>
-    <item android:id="@+id/newTask" android:title="Add Task" android:icon="@drawable/ic_add_task"/>
-    <item android:id="@+id/calendar" android:title="View Calendar" android:icon="@drawable/ic_calendar"/>
+    <item android:id="@+id/home" android:title="@string/home" android:icon="@drawable/ic_home"/>
+    <item android:id="@+id/newTask" android:title="@string/add_task" android:icon="@drawable/ic_add_task"/>
+    <item android:id="@+id/calendar" android:title="@string/view_calendar" android:icon="@drawable/ic_calendar"/>
 
 
 </menu>
