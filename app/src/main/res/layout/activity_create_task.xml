@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="@string/name"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/editTextTaskName"
@@ -54,14 +54,14 @@
             android:ems="10"
             android:gravity="end"
             android:inputType="textPersonName"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="@string/date"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tvDate"
@@ -75,14 +75,14 @@
             android:ems="10"
             android:focusable="true"
             android:gravity="end"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="@string/time"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tvTime"
@@ -96,7 +96,7 @@
             android:ems="10"
             android:focusable="true"
             android:gravity="end"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewRepeats"
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="@string/repeats"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/spinner"
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/notes"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/editTextNotes"
@@ -136,7 +136,7 @@
             android:ems="10"
             android:gravity="end"
             android:inputType="textMultiLine"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
 
     </GridLayout>

@@ -54,6 +54,8 @@
         <item>Every Week</item>
         <item>Every 2 Weeks</item>
         <item>Every Month</item>
+        <item>Every 3 Months</item>
+        <item>Every 6 Months</item>
         <item>Every Year</item>
     </string-array>
 </resources>
