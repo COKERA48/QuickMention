@@ -397,12 +397,15 @@ public class CreateTaskActivity extends AppCompatActivity implements View.OnClic
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth, onDateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 //dpdStart.getDatePicker().setSpinnersShown(true);
 =======
 >>>>>>> parent of 44251aa... "Added some more categories."
 =======
                 //dpdStart.getDatePicker().setCalendarViewShown(false);
 >>>>>>> parent of 79fb9c0... Reduced font sizes on Create Task page to fit screen.
+=======
+>>>>>>> parent of 44251aa... "Added some more categories."
                 if (dpdStart.getWindow() != null)
                     dpdStart.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dpdStart.show();
