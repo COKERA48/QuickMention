@@ -94,7 +94,7 @@ public class TemplateActivity extends AppCompatActivity implements LoaderManager
                         QMContract.TemplateEntry.KEY_CREATED_BY_USER, QMContract.TemplateEntry.KEY_TEMP_CAT },
                 selection,              // Only select templates matching selected category
                 null,
-                null);
+                QMContract.TemplateEntry.KEY_USAGE + " DESC");
 
         // Create list adapter with this cursor
         customAdapter = new TemplateListAdapter(getApplicationContext(), cursorTemplates, editMode);
